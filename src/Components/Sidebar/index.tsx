@@ -4,7 +4,7 @@ import { Text } from "@/ui";
 
 export function Sidebar() {
   return (
-    <div className="flex flex-col h-full p-3 shadow-lg w-60">
+    <div className="flex flex-col min-h-screen p-3 shadow-lg w-60">
       <ul className="pt-2 pb-4 space-y-4 text-sm">
         {routes.map((route) => (
           <li className="rounded-sm" key={route.path}>

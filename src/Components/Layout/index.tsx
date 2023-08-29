@@ -7,11 +7,11 @@ type LayoutProps = {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <div className="h-screen">
+    <div className="min-h-screen">
       <Header />
-      <div className="flex h-[calc(100%-5rem)]">
+      <div className="flex min-h-[calc(100%-5rem)]">
         <Sidebar />
-        <div className="m-16">{children}</div>
+        <div className="m-8 w-full h-fit">{children}</div>
       </div>
     </div>
   );

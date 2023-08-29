@@ -1,9 +1,10 @@
 import { Layout } from "@/Components";
+import { CustomerPage } from "@/Components/Templates/Customer";
 
 export default function Home() {
   return (
     <Layout>
-      <h2>Home Page</h2>
+      <CustomerPage />
     </Layout>
   );
 }
