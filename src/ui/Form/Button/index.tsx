@@ -6,14 +6,14 @@ const button = tv({
   base: "btn",
   variants: {
     variant: {
-      primary: "btn-primary text-white",
-      secundary: "btn-outline btn-info",
+      contained: "btn-primary text-white",
+      outlined: "btn-outline btn-info",
       isLoading: "btn-disabled",
       isDisabled: "btn-disabled",
     },
   },
   defaultVariants: {
-    variant: "primary",
+    variant: "contained",
   },
 });
 

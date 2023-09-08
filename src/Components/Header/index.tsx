@@ -14,7 +14,7 @@ export function Header() {
           <input type="checkbox" className="toggle" />
         </div>
         <div className="mx-16">
-          <Dropdown items={[1, 2]}>
+          <Dropdown items={[{ name: "Item 1" }, { name: "Item 2" }]}>
             <h2>ola mundo</h2>
           </Dropdown>
         </div>

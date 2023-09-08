@@ -6,14 +6,15 @@ type HeadingProps = ComponentProps<"h2"> & {
   className?: string;
 };
 
-export function Heading({ children, className, ...props }: HeadingProps) {
+
+
+export function Heading({ children, className }: HeadingProps) {
   return (
     <h2
       className={twMerge(
         "font-futura text-4xl text-secundary font-semibold",
         className
       )}
-      {...props}
     >
       {children}
     </h2>

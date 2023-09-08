@@ -1,7 +1,7 @@
-import { Layout } from "@/Components";
-import { CustomerPage } from "@/Components/Templates/Customer";
+import { Layout } from "@/components";
+import { CustomerPage } from "@/components/Templates/Customer";
 
-export default function Home() {
+export default function Customer() {
   return (
     <Layout>
       <CustomerPage />

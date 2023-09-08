@@ -1,9 +1,12 @@
+import { Button, Heading, Text } from "@/ui";
 import { Table } from "@/ui/Table";
 import { createColumnHelper } from "@tanstack/react-table";
+import { useRouter } from "next/router";
 
 const columnHelper = createColumnHelper<any>();
 
 export function CustomerPage() {
+  const router = useRouter();
   const columns = [
     columnHelper.accessor("", {
       id: "S.No",
@@ -55,7 +58,13 @@ export function CustomerPage() {
     },
   ];
   return (
-    <section className="bg-white min-h-full shadow-lg p-8">
+    <section className="min-h-full shadow-lg p-8">
+      <div className="flex  justify-between items-center mb-8">
+        <Heading>Clientes</Heading>
+        <Button onClick={() => router.push("/clientes/criar")}>
+          Novo Cliente
+        </Button>
+      </div>
       <Table
         tableData={[...fakeData, ...fakeData, ...fakeData]}
         columns={columns}
