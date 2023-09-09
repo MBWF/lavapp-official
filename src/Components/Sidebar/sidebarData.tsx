@@ -20,10 +20,6 @@ const HomeIcon = () => {
   return <Home size={ICON_SIZE} />;
 };
 
-const SettingsIcon = () => {
-  return <Settings size={ICON_SIZE} />;
-};
-
 const UsersIcon = () => {
   return <Users size={ICON_SIZE} />;
 };

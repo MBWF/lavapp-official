@@ -1,12 +1,12 @@
-import { ComponentProps } from "react";
+import { ComponentProps, forwardRef } from "react";
 import { tv, VariantProps } from "tailwind-variants";
 
 const input = tv({
-  base: "input input-bordered w-full max-w-xs",
+  base: "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg outline-none focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 ",
   variants: {
     color: {
       default: "input-bordered",
-      error: "input-error",
+      error: "input-error border-red-500",
     },
   },
   defaultVariants: {
@@ -20,14 +20,20 @@ type InputProps = ComponentProps<"input"> &
     hasError?: string;
   };
 
-export function Input({ label, hasError, ...props }: InputProps) {
+function StyledInput(
+  { label, hasError, ...props }: InputProps,
+  ref: React.ForwardedRef<HTMLInputElement>
+) {
   return (
     <div className="form-control w-full max-w-xs">
-      <label className="label">
+      <label className="label" htmlFor={label}>
         <span className="label-text">{label}</span>
       </label>
       <input
         className={input({ color: hasError ? "error" : "default" })}
+        aria-label={label}
+        type="text"
+        ref={ref}
         {...props}
       />
       {hasError && (
@@ -38,3 +44,5 @@ export function Input({ label, hasError, ...props }: InputProps) {
     </div>
   );
 }
+
+export const Input = forwardRef(StyledInput);

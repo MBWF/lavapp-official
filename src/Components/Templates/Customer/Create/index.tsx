@@ -1,6 +1,8 @@
 import { Button, Heading, Input } from "@/ui";
+import { useRouter } from "next/router";
 
 export default function CreateCustomer() {
+  const router = useRouter();
   return (
     <form className="shadow-lg p-8 flex flex-col">
       <Heading className="w-full">Novo Cliente</Heading>
@@ -26,10 +28,14 @@ export default function CreateCustomer() {
       </section>
 
       <div className="flex w-full gap-4">
-        <Button className="" variant="outlined">
+        <Button
+          variant="outlined"
+          type="button"
+          onClick={() => router.push("/clientes")}
+        >
           Cancelar
         </Button>
-        <Button className="">Cadastrar</Button>
+        <Button>Cadastrar</Button>
       </div>
     </form>
   );

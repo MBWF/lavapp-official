@@ -58,8 +58,8 @@ export function CustomerPage() {
     },
   ];
   return (
-    <section className="min-h-full shadow-lg p-8">
-      <div className="flex  justify-between items-center mb-8">
+    <section className="shadow-lg p-8">
+      <div className="flex justify-between items-center">
         <Heading>Clientes</Heading>
         <Button onClick={() => router.push("/clientes/criar")}>
           Novo Cliente
