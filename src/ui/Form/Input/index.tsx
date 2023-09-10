@@ -6,7 +6,7 @@ const input = tv({
   variants: {
     color: {
       default: "input-bordered",
-      error: "input-error border-red-500",
+      error: "input-error border-none",
     },
   },
   defaultVariants: {

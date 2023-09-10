@@ -10,6 +10,7 @@ const button = tv({
       outlined: "btn-outline btn-info",
       isLoading: "btn-disabled",
       isDisabled: "btn-disabled",
+      iconButton: "btn-square",
     },
   },
   defaultVariants: {

@@ -4,6 +4,7 @@ import { getItems } from "@/firebase/http/items";
 import { GetServerSideProps } from "next";
 
 export type IItems = {
+  id: string;
   name: string;
   un: string;
   price: number;

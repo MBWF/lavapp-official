@@ -1,5 +1,17 @@
 import { db } from "@/firebase/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+} from "firebase/firestore";
+
+type IItem = {
+  name: string;
+  price: number;
+  un: string;
+};
 
 const itemsCollectionRef = collection(db, "items");
 
@@ -7,4 +19,21 @@ export const getItems = async () => {
   const data = await getDocs(itemsCollectionRef);
 
   return data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+};
+
+export const createItem = async (data: IItem) => {
+  await addDoc(itemsCollectionRef, {
+    ...data,
+  });
+};
+
+export const editItem = async (data: IItem) => {
+  await addDoc(itemsCollectionRef, {
+    ...data,
+  });
+};
+
+export const deleteItem = async (itemId: string) => {
+  const itemDoc = doc(db, "items", itemId);
+  await deleteDoc(itemDoc);
 };
