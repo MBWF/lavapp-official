@@ -8,39 +8,16 @@ export const columns = [
     cell: (info) => <span>{info.row.index + 1}</span>,
     header: "Código",
   }),
-  columnHelper.accessor("firstName", {
+  columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Nome",
   }),
-  columnHelper.accessor("lastName", {
+  columnHelper.accessor("price", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Preço Individual",
   }),
-  columnHelper.accessor("age", {
+  columnHelper.accessor("un", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Unidade",
   }),
-];
-export const fakeData = [
-  {
-    firstName: "Marcio",
-    lastName: "Filho",
-    age: 22,
-    visits: 20,
-    progress: "90",
-  },
-  {
-    firstName: "Lucas",
-    lastName: "Filho",
-    age: 22,
-    visits: 20,
-    progress: "90",
-  },
-  {
-    firstName: "Elias",
-    lastName: "Filho",
-    age: 22,
-    visits: 20,
-    progress: "90",
-  },
 ];

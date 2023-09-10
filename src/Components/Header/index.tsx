@@ -1,7 +1,9 @@
-import { Dropdown } from "@/ui";
+import { useAuth } from "@/contexts/Auth/useAuth";
+import { Button, Dropdown } from "@/ui";
 import Link from "next/link";
 
 export function Header() {
+  const { logout } = useAuth();
   return (
     <div className="navbar h-20 shadow-md">
       <div className="flex-1">
@@ -14,9 +16,7 @@ export function Header() {
           <input type="checkbox" className="toggle" />
         </div>
         <div className="mx-16">
-          <Dropdown items={[{ name: "Item 1" }, { name: "Item 2" }]}>
-            <h2>ola mundo</h2>
-          </Dropdown>
+          <Button onClick={logout}>Sair</Button>
         </div>
       </div>
     </div>

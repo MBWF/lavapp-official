@@ -1,8 +1,6 @@
-import { loginWithEmailAndPassword } from "@/firebase/auth";
+import { useAuth } from "@/contexts/Auth/useAuth";
 import { Button, Heading, Input, Text } from "@/ui";
-import { GetServerSideProps } from "next";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 
 type IFields = {
   email: string;
@@ -10,15 +8,11 @@ type IFields = {
 };
 
 export function LoginPage() {
+  const { signIn } = useAuth();
   const { register, handleSubmit } = useForm<IFields>();
 
   const handleLogin: SubmitHandler<IFields> = async (data) => {
-    loginWithEmailAndPassword({
-      email: data.email,
-      password: data.password,
-    });
-
-    toast.success("Login feito com sucesso.");
+    signIn(data);
   };
   return (
     <section className="bg-gray-50">
@@ -61,9 +55,3 @@ export function LoginPage() {
     </section>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  return {
-    props: {},
-  };
-};
