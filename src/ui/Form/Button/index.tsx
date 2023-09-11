@@ -8,6 +8,7 @@ const button = tv({
     variant: {
       contained: "btn-primary text-white",
       outlined: "btn-outline btn-info",
+      cancel: "btn-outline btn-error",
       isLoading: "btn-disabled",
       isDisabled: "btn-disabled",
       iconButton: "btn-square",
