@@ -1,10 +1,28 @@
 import { Layout } from "@/components";
 import { CustomerPage } from "@/components/Templates/Customer";
+import { ICustomers, getCustomers } from "@/firebase/http/customers";
 
-export default function Customer() {
+import { GetServerSideProps } from "next";
+
+export default function Customer({
+  customersData,
+}: {
+  customersData: ICustomers[];
+}) {
   return (
     <Layout>
-      <CustomerPage />
+      <CustomerPage customersData={customersData} />
     </Layout>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const customers = await getCustomers();
+
+  return {
+    props: {
+      customersData: customers,
+    },
+  };
+};
+

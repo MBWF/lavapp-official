@@ -12,7 +12,7 @@ export function Heading({ children, className }: HeadingProps) {
   return (
     <h2
       className={twMerge(
-        "font-futura text-4xl text-secundary font-semibold",
+        "font-robotoSlab text-4xl text-secundary font-semibold",
         className
       )}
     >

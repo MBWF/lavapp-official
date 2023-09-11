@@ -4,9 +4,11 @@ import { closeModal } from "@/utils/handleModal";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { ItemsValidation, itemsSchema } from "./validations";
+
 import { IItems } from "@/pages/pecas";
 import { useEffect } from "react";
+import { ItemsValidation, itemsSchema } from "./validations";
+import { editItem } from "@/firebase/http/items";
 
 export function EditItemModal({
   defaultValues,
@@ -39,6 +41,11 @@ export function EditItemModal({
 
   const submitNewItem: SubmitHandler<ItemsValidation> = async (data) => {
     try {
+      //TODO - fazer formatação para aceitar números decimais
+      editItem(
+        { ...data, price: Number(data.price) },
+        String(defaultValues?.id)
+      );
       onCloseModal();
       toast.success("Peça editada com sucesso.");
     } catch (error) {

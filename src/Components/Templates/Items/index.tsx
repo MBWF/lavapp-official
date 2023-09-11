@@ -18,7 +18,7 @@ export function ItemsPage({ itemsData }: { itemsData: IItems[] }) {
       await deleteItem(id);
       toast.success("Peça deletada com sucesso.");
     } catch (error) {
-      toast.success("Erro ao deletar peça. Tente novamente.");
+      toast.error("Erro ao deletar peça. Tente novamente.");
       console.error(error);
     }
   };
@@ -27,7 +27,7 @@ export function ItemsPage({ itemsData }: { itemsData: IItems[] }) {
     <section className="shadow-lg p-8">
       <CreateItemModal />
       {currentItem && <EditItemModal defaultValues={currentItem} />}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-8">
         <Heading>Peças</Heading>
         <Button
           onClick={() => {

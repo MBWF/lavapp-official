@@ -1,74 +1,24 @@
-import { Button, Heading, Text } from "@/ui";
-import { Table } from "@/ui/Table";
-import { createColumnHelper } from "@tanstack/react-table";
+import { ICustomers } from "@/firebase/http/customers";
+import { Button, Heading } from "@/ui";
 import { useRouter } from "next/router";
+import { CustomerTable } from "./Table";
 
-const columnHelper = createColumnHelper<any>();
-
-export function CustomerPage() {
+export function CustomerPage({
+  customersData,
+}: {
+  customersData: ICustomers[];
+}) {
   const router = useRouter();
-  const columns = [
-    columnHelper.accessor("", {
-      id: "S.No",
-      cell: (info) => <span>{info.row.index + 1}</span>,
-      header: "S.No",
-    }),
-    columnHelper.accessor("firstName", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "First Name",
-    }),
-    columnHelper.accessor("lastName", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Last Name",
-    }),
-    columnHelper.accessor("age", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Age",
-    }),
-    columnHelper.accessor("visits", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Visits",
-    }),
-    columnHelper.accessor("progress", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Progress",
-    }),
-  ];
-  const fakeData = [
-    {
-      firstName: "Marcio",
-      lastName: "Filho",
-      age: 22,
-      visits: 20,
-      progress: "90",
-    },
-    {
-      firstName: "Lucas",
-      lastName: "Filho",
-      age: 22,
-      visits: 20,
-      progress: "90",
-    },
-    {
-      firstName: "Elias",
-      lastName: "Filho",
-      age: 22,
-      visits: 20,
-      progress: "90",
-    },
-  ];
+
   return (
     <section className="shadow-lg p-8">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-8">
         <Heading>Clientes</Heading>
         <Button onClick={() => router.push("/clientes/criar")}>
           Novo Cliente
         </Button>
       </div>
-      <Table
-        tableData={[...fakeData, ...fakeData, ...fakeData]}
-        columns={columns}
-      />
+      <CustomerTable customersData={customersData} />
     </section>
   );
 }

@@ -5,6 +5,7 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  updateDoc,
 } from "firebase/firestore";
 
 type IItem = {
@@ -27,8 +28,9 @@ export const createItem = async (data: IItem) => {
   });
 };
 
-export const editItem = async (data: IItem) => {
-  await addDoc(itemsCollectionRef, {
+export const editItem = async (data: IItem, itemId: string) => {
+  const currentItem = doc(db, "items", itemId);
+  await updateDoc(currentItem, {
     ...data,
   });
 };

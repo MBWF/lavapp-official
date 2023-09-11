@@ -36,7 +36,7 @@ export function ItemsTable({
       header: "Unidade",
     }),
     columnHelper.accessor("price", {
-      cell: (info) => <span>{formatCurrency(info.getValue())}</span>,
+      cell: (info) => <span>{formatCurrency(Number(info.getValue()))}</span>,
       header: "Preço",
     }),
     columnHelper.accessor("", {

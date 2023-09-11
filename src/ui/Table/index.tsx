@@ -29,7 +29,7 @@ export function Table({ tableData, columns }: TableProps) {
   });
 
   return (
-    <div className="p-2 min-w-full mx-auto text-white fill-gray-400">
+    <div className="min-w-full mx-auto text-white fill-gray-400">
       <table className="border radiu w-full text-left">
         <thead className="bg-primary">
           {table.getHeaderGroups().map((headerGroup) => (
