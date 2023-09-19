@@ -1,3 +1,4 @@
+import { MIN_LENGTH, REQUIRED_ERROR } from "@/utils/ErrorsMessages";
 import { validateCPF } from "@/utils/validateCpf";
 import { parseISO } from "date-fns";
 import { zonedTimeToUtc } from "date-fns-tz";
@@ -8,25 +9,30 @@ const isValidCPFDocument = (document: string) =>
 
 export const customerSchema = z
   .object({
-    name: z.string().min(2, "Nome é obrigatório"),
+    name: z.string({ required_error: REQUIRED_ERROR }).min(2, REQUIRED_ERROR),
     email: z.string().email({
       message: "Email inválido",
     }),
-    cpf: z.string(),
+    cpf: z.string({ required_error: REQUIRED_ERROR }),
     phone_number: z
       .string({
-        required_error: "Número de telefone é obrigatório",
+        required_error: REQUIRED_ERROR,
       })
-      .min(2, "Número de telefone é obrigatório"),
+      .min(2, REQUIRED_ERROR),
     gender: z.object(
       { label: z.string(), value: z.string() },
-      { required_error: "Esse campo é obrigatório." }
+      { required_error: REQUIRED_ERROR }
     ),
+    item_code: z
+      .string({ required_error: REQUIRED_ERROR })
+      .min(1, REQUIRED_ERROR),
     birthdate: z
       .string({
         invalid_type_error: "Insira uma data",
+        required_error: REQUIRED_ERROR,
       })
       .nullable()
+      .optional()
       .refine((date) => date !== null, {
         message: "Insira uma data",
       })
@@ -39,56 +45,30 @@ export const customerSchema = z
             "America/Sao_Paulo"
           );
 
-          return dateWithTimeZone;
+          return dateWithTimeZone.toISOString();
         }
 
         return date;
       }),
-    address: z.object({
-      cep: z.string(),
-      state: z.object(
-        {
-          value: z.string(),
-          label: z.string().optional(),
-        },
-        {
-          required_error: "Selecione um Estado",
-          invalid_type_error: "Selecione um Estado",
-        }
-      ),
-      city: z
-        .object(
-          {
-            value: z.string(),
-            label: z.string().optional(),
-          },
-          {
-            required_error: "Selecione uma Cidade",
-            invalid_type_error: "Selecione um Cidade",
-          }
-        )
-        .nullable(),
-      district: z
-        .string({
-          required_error: "O bairro é obrigatório",
-        })
-        .min(2, "O bairro deve ter mais de dois caracteres"),
-      place_number: z
-        .string({
-          required_error: "O número da residencia é obrigatório",
-        })
-        .min(1, "Número obrigatório"),
-      street: z
-        .string({
-          required_error: "O endereço é obrigatório",
-        })
-        .min(2, "O endereço deve ter mais de dois caracteres"),
-      complement: z.string().optional(),
-    }),
-  })
-  .refine((arg) => arg.address.city, {
-    path: ["address.city"],
-    message: "Cidade é obrigatório",
+    district: z
+      .string({
+        required_error: REQUIRED_ERROR,
+      })
+      .min(2, "O bairro deve ter mais de dois caracteres"),
+    cep: z.string({ required_error: REQUIRED_ERROR }).min(3, MIN_LENGTH),
+    state: z.string({ required_error: REQUIRED_ERROR }).min(3, MIN_LENGTH),
+    city: z.string({ required_error: REQUIRED_ERROR }).min(3, MIN_LENGTH),
+    place_number: z
+      .string({
+        required_error: REQUIRED_ERROR,
+      })
+      .min(1, REQUIRED_ERROR),
+    street: z
+      .string({
+        required_error: REQUIRED_ERROR,
+      })
+      .min(2, "O endereço deve ter mais de dois caracteres"),
+    complement: z.string({ required_error: REQUIRED_ERROR }).optional(),
   })
 
   .refine((arg) => !isValidCPFDocument(arg.cpf.replace(/\D/g, "")), {

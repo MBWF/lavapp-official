@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 import Select from "react-select";
 
 import { selectStyles } from "../selectStyles";
+import { ErrorMessage } from "@/ui/Typography/ErrorMessage";
 
 type SelectInputProps = {
   defaultOptions:
@@ -48,10 +49,10 @@ const DefaultSelectStyled = (
         placeholder={placeholder}
         defaultValue={defaultValue}
         onChange={onChange}
-        className="select p-0 w-max"
+        className="p-0 min-w-fit"
         {...rest}
       />
-      {!!hasError && <span className="text-error">{hasError}</span>}
+      {!!hasError && <ErrorMessage>{hasError}</ErrorMessage>}
     </div>
   );
 };
