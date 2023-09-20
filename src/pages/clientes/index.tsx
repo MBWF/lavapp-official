@@ -1,6 +1,7 @@
 import { Layout } from "@/components";
 import { CustomerPage } from "@/components/Templates/Customer";
-import { ICustomers, getCustomers } from "@/firebase/http/customers";
+import { getCustomers } from "@/firebase/http/customers";
+import { ICustomers } from "@/types/Customers";
 
 import { GetServerSideProps } from "next";
 

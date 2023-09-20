@@ -1,8 +1,6 @@
-import { ICustomers } from "@/firebase/http/customers";
+import { ICustomers } from "@/types/Customers";
 import { Button, Text } from "@/ui";
 import { Table } from "@/ui/Table";
-import { formatCurrency } from "@/utils/formatCurrency";
-import { openModal } from "@/utils/handleModal";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { Edit2, Trash2 } from "lucide-react";
@@ -35,16 +33,14 @@ export function CustomerTable({
       cell: (info) => <Text className="text-base">{info.getValue()}</Text>,
       header: "Telefone",
     }),
-    columnHelper.accessor("plan", {
-      cell: (info) => <Text className="text-base">{info.getValue()}</Text>,
-      header: "Plano",
-    }),
     columnHelper.accessor("", {
       cell: (info) => (
         <div className="flex gap-4">
           <Button
             variant="iconButton"
-            onClick={() => router.push("/clientes/criar")}
+            onClick={() =>
+              router.push(`/clientes/editar/${info.row.original.id}`)
+            }
           >
             <Edit2 className="text-blue-500" size={16} />
           </Button>

@@ -1,14 +1,15 @@
+import { editCustomer } from "@/firebase/http/customers";
+import { ICustomers } from "@/types/Customers";
 import { Button, Heading, Input, InputMaskCustom } from "@/ui";
 import CustomDatePicker from "@/ui/Form/DatePicker";
 import { DefaultSelectInput } from "@/ui/Form/Select/DefaultSelect";
 import { ErrorMessage } from "@/ui/Typography/ErrorMessage";
+import { convertDateToInput } from "@/utils/convertDate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { CustomerSchemaType, customerSchema } from "./validations";
-import { createCustomer } from "@/firebase/http/customers";
-import { ICustomers } from "@/types/Customers";
 import { toast } from "react-toastify";
+import { CustomerSchemaType, customerSchema } from "./validations";
 
 const genderList = [
   { value: "MALE", label: "Masculino" },
@@ -16,7 +17,11 @@ const genderList = [
   { value: "OTHER", label: "Outros" },
 ];
 
-export default function CreateCustomer() {
+type EditCustomerPageProps = {
+  customerData: ICustomers;
+};
+
+export default function EditCustomer({ customerData }: EditCustomerPageProps) {
   const router = useRouter();
 
   const {
@@ -25,39 +30,60 @@ export default function CreateCustomer() {
     formState: { errors },
     handleSubmit,
   } = useForm<CustomerSchemaType>({
+    defaultValues: {
+      name: customerData.name,
+      cpf: customerData.cpf,
+      email: customerData.email,
+      phone_number: customerData.phone_number,
+      birthdate: convertDateToInput(String(customerData.birthdate)),
+      item_code: customerData.code,
+      district: customerData.address.district,
+      gender: genderList.find((gender) => gender.value === customerData.gender),
+      place_number: customerData.address.number,
+      street: customerData.address.street,
+      city: customerData.address.city,
+      state: customerData.address.state,
+      cep: customerData.address.zip_code,
+      complement: customerData.address.complement,
+    },
     resolver: zodResolver(customerSchema),
   });
 
-  const handleCreateCustomer: SubmitHandler<CustomerSchemaType> = (data) => {
+  const handleEditCustomer: SubmitHandler<CustomerSchemaType> = (data) => {
     try {
-      createCustomer({
-        name: data.name,
-        cpf: data.cpf,
-        phone_number: data.phone_number,
-        code: data.item_code,
-        birthdate: data.birthdate,
-        gender: data.gender.value,
-        address: {
-          district: data.district,
-          number: data.place_number,
-          street: data.street,
-          zip_code: data.cep,
-          complement: data.complement,
-        },
-      } as ICustomers);
-      toast.success("Cliente cadastrado com sucesso.");
+      editCustomer(
+        {
+          name: data.name,
+          cpf: data.cpf,
+          phone_number: data.phone_number,
+          code: data.item_code,
+          birthdate: data.birthdate,
+          gender: data.gender.value,
+          address: {
+            city: data.city,
+            state: data.state,
+            district: data.district,
+            number: data.place_number,
+            street: data.street,
+            zip_code: data.cep,
+            complement: data.complement,
+          },
+        } as ICustomers,
+        String(router.query.id)
+      );
+      toast.success("Cliente editado com sucesso.");
       router.push("/clientes");
     } catch (error) {
-      toast.error("Erro ao cadastrado cliente.");
+      toast.error("Erro ao editar cliente. Tente mais tarde.");
     }
   };
 
   return (
     <form
       className="shadow-lg p-8 flex flex-col w-full"
-      onSubmit={handleSubmit(handleCreateCustomer)}
+      onSubmit={handleSubmit(handleEditCustomer)}
     >
-      <Heading className="w-full">Novo Cliente</Heading>
+      <Heading className="w-full">Editar Cliente</Heading>
       <section className="flex gap-8">
         <div className="flex flex-col gap-3 w-60 mb-12">
           <Input

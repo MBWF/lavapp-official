@@ -1,4 +1,4 @@
-import { ICustomers } from "@/firebase/http/customers";
+import { ICustomers } from "@/types/Customers";
 import { Button, Heading } from "@/ui";
 import { useRouter } from "next/router";
 import { CustomerTable } from "./Table";
