@@ -10,7 +10,7 @@ const columnHelper = createColumnHelper<any>();
 
 type ItemsTableProps = {
   customersData: ICustomers[];
-  handleDelete?: (id: string) => Promise<void>;
+  handleDelete: (id: string) => Promise<void>;
 };
 
 export function CustomerTable({
@@ -44,7 +44,10 @@ export function CustomerTable({
           >
             <Edit2 className="text-blue-500" size={16} />
           </Button>
-          <Button variant="iconButton">
+          <Button
+            variant="iconButton"
+            onClick={() => handleDelete(info.row.original.id)}
+          >
             <Trash2 color="red" size={16} />
           </Button>
         </div>

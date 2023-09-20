@@ -146,7 +146,7 @@ export default function CreateCustomer() {
 
           <Input
             label="Código"
-            hasError={errors.name?.message}
+            hasError={errors.item_code?.message}
             {...register("item_code")}
           />
         </div>

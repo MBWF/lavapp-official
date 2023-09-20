@@ -18,8 +18,8 @@ export const getCustomers = async () => {
   return data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
 };
 
-export const getCustomersById = async (id: string) => {
-  const docCustomerRef = doc(db, "customers", id);
+export const getCustomersById = async (customerId: string) => {
+  const docCustomerRef = doc(db, "customers", customerId);
 
   const data = await getDoc(docCustomerRef);
 
@@ -39,7 +39,7 @@ export const editCustomer = async (data: ICustomers, customerId: string) => {
   });
 };
 
-// export const deleteItem = async (itemId: string) => {
-//   const itemDoc = doc(db, "items", itemId);
-//   await deleteDoc(itemDoc);
-// };
+export const deleteCustomer = async (customerId: string) => {
+  const customerDoc = doc(db, "customers", customerId);
+  await deleteDoc(customerDoc);
+};
