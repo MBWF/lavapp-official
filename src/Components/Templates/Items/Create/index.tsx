@@ -1,5 +1,5 @@
 import { Modal } from "@/components/Modal";
-import { createItem } from "@/firebase/http/items";
+import { createItem, getItems } from "@/firebase/http/items";
 import { Button, CurrencyInput, Input } from "@/ui";
 import { closeModal } from "@/utils/handleModal";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,6 +28,7 @@ export function CreateItemModal() {
   const submitNewItem: SubmitHandler<ItemsValidation> = async (data) => {
     try {
       await createItem(data);
+      await getItems();
       onCloseModal();
       toast.success("Peça criada com sucesso.");
     } catch (error) {
