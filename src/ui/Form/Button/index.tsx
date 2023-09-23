@@ -32,7 +32,11 @@ export function Button({
   ...props
 }: ButtonProps) {
   return (
-    <button className={twMerge(button({ variant }), className)} {...props}>
+    <button
+      type="button"
+      className={twMerge(button({ variant }), className)}
+      {...props}
+    >
       {variant === "isLoading" ? (
         <>
           <span className="loading loading-spinner"></span>

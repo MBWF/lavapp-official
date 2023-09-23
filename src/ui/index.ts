@@ -1,5 +1,6 @@
 export * from "./Typography/Text";
 export * from "./Typography/Heading";
+export * from "./Typography/ErrorMessage";
 export * from "./Form/Select/DefaultSelect";
 export * from "./Form/DatePicker";
 export * from "./Form/InputMask";

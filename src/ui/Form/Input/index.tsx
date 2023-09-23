@@ -25,7 +25,7 @@ function StyledInput(
   ref: React.ForwardedRef<HTMLInputElement>
 ) {
   return (
-    <div className="form-control w-full max-w-xs">
+    <div className="form-control w-full">
       <label className="label" htmlFor={label}>
         <span className="label-text">{label}</span>
       </label>
