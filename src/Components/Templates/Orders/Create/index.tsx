@@ -8,10 +8,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SecondStep } from "./SecondStep";
 import { ICustomers } from "@/types/Customers";
 import { IItems } from "@/pages/pecas";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { ThirdStep } from "./ThirdStep";
+import { convertDateToInput } from "@/utils/convertDate";
+import { REQUIRED_ERROR } from "@/utils/ErrorsMessages";
+import { ConfirmationStep } from "./Confirmation";
 
 type OrdersPageProps = {
   customerData: ICustomers[];
   itemsData: IItems[];
+};
+
+export type SelectedItemsProps = {
+  id: string;
+  name: string;
+  quantity: number;
 };
 
 export function CreateNewOrderTemplate({
@@ -22,15 +34,45 @@ export function CreateNewOrderTemplate({
     register,
     control,
     handleSubmit,
+    setError,
+    getValues,
     formState: { errors },
-  } = useForm<OrderSchemaType>({ resolver: zodResolver(orderSchema) });
+  } = useForm<OrderSchemaType>({
+    defaultValues: {
+      collect_date: convertDateToInput(new Date().toISOString()),
+    },
+    resolver: zodResolver(orderSchema),
+  });
   const router = useRouter();
   const { currentStep, handleNextStep, handlePreviousStep } = useCreateOrder();
+  const [selectedItems, setSelectedItems] = useState<SelectedItemsProps[]>([]);
 
-  console.log(errors);
   const handleSubmitOrder: SubmitHandler<OrderSchemaType> = (data) => {
     for (let prop in errors) {
       if (errors.hasOwnProperty(prop)) return;
+    }
+
+    if (currentStep === 2) {
+      if (selectedItems.length === 0) {
+        toast.warning("Você deve adicionar as peças para avançar.");
+        return;
+      }
+    }
+
+    if (currentStep === 3) {
+      if (!data.collect_date) {
+        setError("collect_date", { message: REQUIRED_ERROR });
+        return;
+      }
+      if (!data.delivery_date) {
+        setError("delivery_date", { message: REQUIRED_ERROR });
+        return;
+      }
+    }
+
+    if (currentStep === 4) {
+      console.log(data);
+      return;
     }
 
     handleNextStep();
@@ -52,7 +94,7 @@ export function CreateNewOrderTemplate({
             Peças
           </li>
           <li className={`step ${currentStep >= 3 ? "step-primary" : ""}`}>
-            Endereço
+            Entrega
           </li>
           <li className={`step ${currentStep >= 4 ? "step-primary" : ""}`}>
             Confirmação
@@ -67,7 +109,22 @@ export function CreateNewOrderTemplate({
               customerData={customerData}
             />
           )}
-          {currentStep === 2 && <SecondStep itemsData={itemsData} />}
+          {currentStep === 2 && (
+            <SecondStep
+              itemsData={itemsData}
+              selectedItems={selectedItems}
+              setSelectedItems={setSelectedItems}
+            />
+          )}
+          {currentStep === 3 && (
+            <ThirdStep control={control} register={register} errors={errors} />
+          )}
+          {currentStep === 4 && (
+            <ConfirmationStep
+              selectedItems={selectedItems}
+              orderData={getValues()}
+            />
+          )}
           <div className="flex justify-between my-16">
             <Button variant="cancel" onClick={() => router.push("/pedidos")}>
               Cancelar
@@ -81,7 +138,9 @@ export function CreateNewOrderTemplate({
                 Voltar
               </Button>
 
-              <Button type="submit">Próximo</Button>
+              <Button type="submit">
+                {currentStep === 4 ? "Cadastrar" : "Próximo"}
+              </Button>
             </div>
           </div>
         </div>

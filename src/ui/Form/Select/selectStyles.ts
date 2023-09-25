@@ -7,6 +7,7 @@ export const selectStyles: StylesConfig = {
     borderRadius: "0.25rem",
     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
     fontFamily: "'Roboto Slab', sans-serif",
+    minWidth: "200px",
   }),
   indicatorSeparator: () => ({
     display: "none",

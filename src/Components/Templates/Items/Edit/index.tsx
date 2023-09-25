@@ -92,7 +92,7 @@ export function EditItemModal({
           <Button variant="outlined" type="button" onClick={onCloseModal}>
             Cancelar
           </Button>
-          <Button>Adicionar</Button>
+          <Button type="submit">Adicionar</Button>
         </div>
       </form>
     </Modal>

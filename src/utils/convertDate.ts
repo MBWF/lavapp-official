@@ -1,3 +1,5 @@
+import { format, parseISO } from "date-fns";
+
 export function convertDateToInput(date: string) {
   const data = new Date(date);
 
@@ -8,4 +10,10 @@ export function convertDateToInput(date: string) {
   const formatedDate = `${year}-${month}-${day}`;
 
   return formatedDate;
+}
+
+export function convertDateToShow(date: string) {
+  const data = parseISO(date);
+
+  return format(data, "dd/MM/yyyy");
 }

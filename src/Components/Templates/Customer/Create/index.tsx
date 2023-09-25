@@ -197,7 +197,7 @@ export default function CreateCustomer() {
         >
           Cancelar
         </Button>
-        <Button>Cadastrar</Button>
+        <Button type="submit">Cadastrar</Button>
       </div>
     </form>
   );

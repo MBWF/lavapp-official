@@ -1,4 +1,6 @@
-import { REQUIRED_ERROR } from "@/utils/ErrorsMessages";
+import { MIN_LENGTH, REQUIRED_ERROR } from "@/utils/ErrorsMessages";
+import { parseISO } from "date-fns";
+import { zonedTimeToUtc } from "date-fns-tz";
 import { IssueData, z } from "zod";
 
 const customAddIssueString: IssueData = {
@@ -19,47 +21,67 @@ export const orderSchema = z
       .optional(),
     name: z.string().optional(),
     isNewCustomer: z.boolean(),
+    isDelivery: z.boolean().optional(),
     phone_number: z
       .string({
         required_error: REQUIRED_ERROR,
       })
       .optional(),
+    collect_date: z
+      .string({
+        invalid_type_error: "Insira uma data",
+        required_error: REQUIRED_ERROR,
+      })
+      .nullable()
+      .optional()
+      .refine((date) => date !== null, {
+        message: "Insira uma data",
+      })
+      .transform((date) => {
+        if (date) {
+          const parsed_date = parseISO(date);
 
-    // email: z.string().email({
-    //   message: "Email inválido",
-    // }),
-    //     cpf: z.string({ required_error: REQUIRED_ERROR }),
-    //     gender: z.object(
-    //       { label: z.string(), value: z.string() },
-    //       { required_error: REQUIRED_ERROR }
-    //     ),
-    //     item_code: z
-    //       .string({ required_error: REQUIRED_ERROR })
-    //       .min(1, REQUIRED_ERROR),
-    //     district: z
-    //       .string({
-    //         required_error: REQUIRED_ERROR,
-    //       })
-    //       .min(2, "O bairro deve ter mais de dois caracteres"),
-    //     cep: z.string({ required_error: REQUIRED_ERROR }).min(3, MIN_LENGTH),
-    //     state: z.string({ required_error: REQUIRED_ERROR }).min(3, MIN_LENGTH),
-    //     city: z.string({ required_error: REQUIRED_ERROR }).min(3, MIN_LENGTH),
-    //     place_number: z
-    //       .string({
-    //         required_error: REQUIRED_ERROR,
-    //       })
-    //       .min(1, REQUIRED_ERROR),
-    //     street: z
-    //       .string({
-    //         required_error: REQUIRED_ERROR,
-    //       })
-    //       .min(2, "O endereço deve ter mais de dois caracteres"),
-    //     complement: z.string({ required_error: REQUIRED_ERROR }).optional(),
-    //   })
+          const dateWithTimeZone = zonedTimeToUtc(
+            parsed_date,
+            "America/Sao_Paulo"
+          );
 
-    //   .refine((arg) => !isValidCPFDocument(arg.cpf.replace(/\D/g, "")), {
-    //     path: ["cpf"],
-    //     message: "CPF inválido",
+          return dateWithTimeZone.toISOString();
+        }
+
+        return date;
+      }),
+    delivery_date: z
+      .string({
+        invalid_type_error: "Insira uma data",
+        required_error: REQUIRED_ERROR,
+      })
+      .nullable()
+      .optional()
+      .refine((date) => date !== null, {
+        message: "Insira uma data",
+      })
+      .transform((date) => {
+        if (date) {
+          const parsed_date = parseISO(date);
+
+          const dateWithTimeZone = zonedTimeToUtc(
+            parsed_date,
+            "America/Sao_Paulo"
+          );
+
+          return dateWithTimeZone.toISOString();
+        }
+
+        return date;
+      }),
+
+    cep: z.string().optional(),
+    city: z.string().optional(),
+    place_number: z.string().optional(),
+    district: z.string().optional(),
+    street: z.string().optional(),
+    complement: z.string({ required_error: REQUIRED_ERROR }).optional(),
   })
   .superRefine((ctx, val) => {
     if (ctx.isNewCustomer) {
@@ -75,7 +97,8 @@ export const orderSchema = z
           path: ["phone_number"],
         });
       }
-    } else {
+    }
+    if (!ctx.isNewCustomer) {
       if (!ctx.customer)
         val.addIssue({
           code: "too_small",
@@ -85,6 +108,37 @@ export const orderSchema = z
           path: ["customer"],
           message: REQUIRED_ERROR,
         });
+    }
+
+    if (ctx.isDelivery) {
+      if (Number(ctx.cep?.length) < 3) {
+        val.addIssue({
+          ...customAddIssueString,
+          path: ["cep"],
+        });
+      }
+      if (Number(ctx.district?.length) < 3) {
+        val.addIssue({
+          ...customAddIssueString,
+          path: ["district"],
+        });
+      }
+      if (Number(ctx.street?.length) < 3) {
+        val.addIssue({
+          ...customAddIssueString,
+          path: ["street"],
+        });
+      }
+      if (Number(ctx.place_number?.length) < 1) {
+        val.addIssue({
+          code: "too_small",
+          minimum: 1,
+          inclusive: true,
+          type: "string",
+          message: REQUIRED_ERROR,
+          path: ["place_number"],
+        });
+      }
     }
   });
 

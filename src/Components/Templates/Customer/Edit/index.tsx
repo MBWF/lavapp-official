@@ -223,7 +223,7 @@ export default function EditCustomer({ customerData }: EditCustomerPageProps) {
         >
           Cancelar
         </Button>
-        <Button>Cadastrar</Button>
+        <Button type="submit">Cadastrar</Button>
       </div>
     </form>
   );
