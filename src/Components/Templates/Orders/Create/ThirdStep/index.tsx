@@ -6,7 +6,6 @@ import {
 } from "react-hook-form";
 import { OrderSchemaType } from "../validations";
 import CustomDatePicker from "@/ui/Form/DatePicker";
-import { convertDateToInput } from "@/utils/convertDate";
 import { Input, Text } from "@/ui";
 import { useState } from "react";
 
@@ -28,7 +27,7 @@ export function ThirdStep({ control, errors, register }: ThirdStepProps) {
             render={({ field: { onChange, value } }) => (
               <CustomDatePicker
                 label="Dia da Coleta"
-                type="date"
+                type="datetime-local"
                 onChange={onChange}
                 value={String(value)}
                 hasError={errors.collect_date?.message}
@@ -44,7 +43,7 @@ export function ThirdStep({ control, errors, register }: ThirdStepProps) {
             render={({ field: { onChange, value } }) => (
               <CustomDatePicker
                 label="Data de Entrega"
-                type="date"
+                type="datetime-local"
                 onChange={onChange}
                 value={String(value)}
                 hasError={errors.delivery_date?.message}

@@ -7,13 +7,13 @@ export function convertDateToInput(date: string) {
   const month = String(data.getMonth() + 1).padStart(2, "0");
   const day = String(data.getDate()).padStart(2, "0");
 
-  const formatedDate = `${year}-${month}-${day}`;
+  let formatedDate = `${year}-${month}-${day}T13:00:00`;
 
   return formatedDate;
 }
 
 export function convertDateToShow(date: string) {
   const data = parseISO(date);
-
-  return format(data, "dd/MM/yyyy");
+  const formatedDate = format(data, "dd/MM/yyyy");
+  return formatedDate;
 }

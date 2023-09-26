@@ -8,11 +8,15 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 
 type CalendarProps = {
   initialEvents: EventSourceInput;
+  handleSelectEvent: (id: string) => void;
 };
 
-export default function Calendar({ initialEvents }: CalendarProps) {
+export default function Calendar({
+  initialEvents,
+  handleSelectEvent,
+}: CalendarProps) {
   const onClick = (data: EventImpl) => {
-    console.log(data.title);
+    handleSelectEvent(data.id);
   };
   return (
     <div>

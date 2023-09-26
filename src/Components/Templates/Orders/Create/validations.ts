@@ -20,6 +20,7 @@ export const orderSchema = z
       )
       .optional(),
     name: z.string().optional(),
+    description: z.string().optional(),
     isNewCustomer: z.boolean(),
     isDelivery: z.boolean().optional(),
     phone_number: z
@@ -41,8 +42,12 @@ export const orderSchema = z
         if (date) {
           const parsed_date = parseISO(date);
 
+          const lessThreeHours = parsed_date.setHours(
+            parsed_date.getHours() - 3
+          );
+
           const dateWithTimeZone = zonedTimeToUtc(
-            parsed_date,
+            lessThreeHours,
             "America/Sao_Paulo"
           );
 
@@ -65,8 +70,12 @@ export const orderSchema = z
         if (date) {
           const parsed_date = parseISO(date);
 
+          const lessThreeHours = parsed_date.setHours(
+            parsed_date.getHours() - 3
+          );
+
           const dateWithTimeZone = zonedTimeToUtc(
-            parsed_date,
+            lessThreeHours,
             "America/Sao_Paulo"
           );
 

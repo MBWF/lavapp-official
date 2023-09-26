@@ -55,7 +55,7 @@ export function EditItemModal({
   };
 
   return (
-    <Modal id="editItemModal" title="Nova Peça" onCloseModal={onCloseModal}>
+    <Modal id="editItemModal" title="Editar Peça" onCloseModal={onCloseModal}>
       <form onSubmit={handleSubmit(submitNewItem)}>
         {defaultValues?.price && (
           <>
@@ -92,7 +92,7 @@ export function EditItemModal({
           <Button variant="outlined" type="button" onClick={onCloseModal}>
             Cancelar
           </Button>
-          <Button type="submit">Adicionar</Button>
+          <Button type="submit">Editar</Button>
         </div>
       </form>
     </Modal>

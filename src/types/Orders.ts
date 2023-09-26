@@ -1,6 +1,29 @@
 export type IOrders = {
-  name: string;
-  items_number: number;
+  id?: string;
+  order_number: number;
+  total: number;
+  collect_date: string;
+  delivery_date: string;
+  customer: {
+    id: string;
+    name: string;
+  } | null;
+  phone_number: string | null;
+  name: string | null;
+  items: {
+    id: string;
+    name: string;
+    quantity: number;
+  }[];
   isDelivery: boolean;
+  isNewCustomer: boolean;
+  description: string;
   status: string;
+  address?: {
+    zip_code: string;
+    district: string;
+    place_number: string;
+    street: string;
+    complement?: string;
+  } | null;
 };

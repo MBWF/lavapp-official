@@ -46,7 +46,9 @@ export function LoginPage() {
                 />
               </div>
               <div className="w-full flex justify-center">
-                <Button className="w-1/2">Entrar</Button>
+                <Button className="w-1/2" type="submit">
+                  Entrar
+                </Button>
               </div>
             </form>
           </div>

@@ -1,7 +1,16 @@
-import { ReactNode, createContext, useContext, useState } from "react";
+import { db } from "@/firebase/firebase";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 type CreateOrderContextType = {
   currentStep: number;
+  lastOrderNumber: number;
   handleNextStep: () => void;
   handlePreviousStep: () => void;
 };
@@ -10,10 +19,12 @@ type AuthContextProps = {
   children: ReactNode;
 };
 
+const OrdersCollectionRef = collection(db, "orders");
+
 export const CreateOrderContext = createContext({} as CreateOrderContextType);
 
 export function CreateOrderProvider({ children }: AuthContextProps) {
-  //   const router = useRouter();
+  const [lastOrderNumber, setLastOrderNumber] = useState<number>(0);
   const [currentStep, setCurrentStep] = useState<number>(1);
 
   const handleNextStep = () => {
@@ -26,9 +37,33 @@ export function CreateOrderProvider({ children }: AuthContextProps) {
     setCurrentStep((state) => state - 1);
   };
 
+  useEffect(() => {
+    const allOrdersQuery = query(
+      OrdersCollectionRef,
+      orderBy("order_number", "asc")
+    );
+
+    const unSub = onSnapshot(allOrdersQuery, (snapshot) => {
+      const allOrdersOrderedByNumber = snapshot.docs.map((doc) => ({
+        order_number: doc.data().order_number,
+      }));
+      setLastOrderNumber(
+        allOrdersOrderedByNumber[allOrdersOrderedByNumber.length - 1]
+          .order_number
+      );
+    });
+
+    return unSub;
+  }, []);
+
   return (
     <CreateOrderContext.Provider
-      value={{ currentStep, handleNextStep, handlePreviousStep }}
+      value={{
+        currentStep,
+        handleNextStep,
+        handlePreviousStep,
+        lastOrderNumber,
+      }}
     >
       {children}
     </CreateOrderContext.Provider>

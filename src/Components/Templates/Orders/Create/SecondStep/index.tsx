@@ -1,13 +1,22 @@
 import { IItems } from "@/pages/pecas";
 import { Button, DefaultSelectInput, Input, Text } from "@/ui";
 import { Minus, Plus, Trash2 } from "lucide-react";
-import { Dispatch, SetStateAction, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { SelectedItemsProps } from "..";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 export type SecondStepProps = {
   itemsData: IItems[];
   selectedItems: SelectedItemsProps[];
   setSelectedItems: Dispatch<SetStateAction<SelectedItemsProps[]>>;
+  totalPrice: number;
+  setTotalPrice: Dispatch<SetStateAction<number>>;
 };
 
 type CurrentSelectedItemProps = {
@@ -19,6 +28,8 @@ export function SecondStep({
   itemsData,
   selectedItems,
   setSelectedItems,
+  totalPrice,
+  setTotalPrice,
 }: SecondStepProps) {
   const [currentSelectedItem, setCurrentSelectedItem] =
     useState<CurrentSelectedItemProps>();
@@ -83,16 +94,37 @@ export function SecondStep({
     setSelectedItems(changedValue);
   };
 
+  const handleGetItemsPrice = useCallback(() => {
+    let value = 0;
+    selectedItems.forEach((item) => {
+      itemsData.map((currentItem) => {
+        if (currentItem.id === item.id) {
+          value += currentItem.price * item.quantity;
+        }
+      });
+    });
+
+    setTotalPrice(value);
+  }, [itemsData, selectedItems]);
+
+  useEffect(() => {
+    handleGetItemsPrice();
+  }, [handleGetItemsPrice, selectedItems]);
+
   return (
     <div className="text-lg">
       <div className="flex justify-between w-full items-end mb-8">
         <DefaultSelectInput
-          defaultOptions={itemsData.map((item) => {
-            return {
-              label: item.name,
-              value: item.id,
-            };
-          })}
+          defaultOptions={itemsData
+            .filter(
+              (item1) => !selectedItems.some((item2) => item2.id === item1.id)
+            )
+            .map((item) => {
+              return {
+                label: item.name,
+                value: item.id,
+              };
+            })}
           onChange={setCurrentSelectedItem}
           label="Selecione a peça"
           placeholder="Adicione o item"
@@ -102,6 +134,7 @@ export function SecondStep({
           <Input
             label="Quantidade"
             type="number"
+            min={0}
             value={currentQuantity}
             onChange={(e) => setCurrentQuantity(Number(e.target.value))}
           />
@@ -114,15 +147,21 @@ export function SecondStep({
           Adicionar
         </Button>
       </div>
-      <Text>
-        <Text className="mr-4">Total de peças:</Text>
-        <b>
-          {selectedItems.reduce(
-            (acc, elem) => (acc += Number(elem.quantity)),
-            0
-          )}
-        </b>
-      </Text>
+      <div className="flex justify-between">
+        <Text>
+          <Text className="mr-4">Total de peças:</Text>
+          <b>
+            {selectedItems.reduce(
+              (acc, elem) => (acc += Number(elem.quantity)),
+              0
+            )}
+          </b>
+        </Text>
+        <Text>
+          <Text className="mr-4">Valor total:</Text>
+          <b>{formatCurrency(totalPrice)}</b>
+        </Text>
+      </div>
       {selectedItems.map((item: SelectedItemsProps) => (
         <div key={item.id} className="flex flex-col w-full">
           <div className="my-2 w-full flex justify-between items-center">

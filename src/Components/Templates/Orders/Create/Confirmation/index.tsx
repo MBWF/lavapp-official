@@ -1,16 +1,22 @@
-import { Text } from "@/ui";
+import { Input, Text } from "@/ui";
 import { SelectedItemsProps } from "..";
 import { OrderSchemaType } from "../validations";
 import { convertDateToShow } from "@/utils/convertDate";
+import { formatCurrency } from "@/utils/formatCurrency";
+import { UseFormRegister } from "react-hook-form";
 
 type ConfirmationStepProps = {
   selectedItems: SelectedItemsProps[];
+  register: UseFormRegister<OrderSchemaType>;
   orderData: OrderSchemaType;
+  totalPrice: number;
 };
 
 export function ConfirmationStep({
   selectedItems,
   orderData,
+  totalPrice,
+  register,
 }: ConfirmationStepProps) {
   return (
     <section className="flex flex-col gap-8">
@@ -70,11 +76,28 @@ export function ConfirmationStep({
               </Text>
               <Text>{convertDateToShow(String(orderData.delivery_date))}</Text>
             </div>
+            <div className="flex flex-col">
+              <Text className="mr-2">Valor Total</Text>
+              <Text>
+                <b>{formatCurrency(totalPrice)}</b>
+              </Text>
+            </div>
+            <div className="flex flex-col">
+              <Text className="mr-2">Total de peças</Text>
+              <Text>
+                <b>
+                  {selectedItems.reduce(
+                    (acc, elem) => (acc += Number(elem.quantity)),
+                    0
+                  )}
+                </b>
+              </Text>
+            </div>
           </div>
         </div>
       </div>
 
-      <div>
+      <div className="flex flex-col">
         <Text className="text-xl">
           <b>Detalhes da Entrega</b>
         </Text>
@@ -102,6 +125,15 @@ export function ConfirmationStep({
         ) : (
           <Text>Para retirar na lavanderia</Text>
         )}
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <Text>Obsevações:</Text>
+        <textarea
+          className="textarea border-gray-400 h-20"
+          placeholder="Adicione observações sobre as peças ou o pedido."
+          {...register("description")}
+        />
       </div>
     </section>
   );

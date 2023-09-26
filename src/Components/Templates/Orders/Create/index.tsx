@@ -1,19 +1,20 @@
-import { Button, Heading } from "@/ui";
-import { FirstStep } from "./FirstStep";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { OrderSchemaType, orderSchema } from "./validations";
 import { useCreateOrder } from "@/contexts/Order/useCreateOrder";
-import { useRouter } from "next/router";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { SecondStep } from "./SecondStep";
-import { ICustomers } from "@/types/Customers";
+import { createOrder } from "@/firebase/http/Orders";
 import { IItems } from "@/pages/pecas";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { ThirdStep } from "./ThirdStep";
-import { convertDateToInput } from "@/utils/convertDate";
+import { ICustomers } from "@/types/Customers";
+import { Button, Heading } from "@/ui";
 import { REQUIRED_ERROR } from "@/utils/ErrorsMessages";
+import { convertDateToInput } from "@/utils/convertDate";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { ConfirmationStep } from "./Confirmation";
+import { FirstStep } from "./FirstStep";
+import { SecondStep } from "./SecondStep";
+import { ThirdStep } from "./ThirdStep";
+import { OrderSchemaType, orderSchema } from "./validations";
 
 type OrdersPageProps = {
   customerData: ICustomers[];
@@ -44,8 +45,10 @@ export function CreateNewOrderTemplate({
     resolver: zodResolver(orderSchema),
   });
   const router = useRouter();
-  const { currentStep, handleNextStep, handlePreviousStep } = useCreateOrder();
+  const { currentStep, handleNextStep, handlePreviousStep, lastOrderNumber } =
+    useCreateOrder();
   const [selectedItems, setSelectedItems] = useState<SelectedItemsProps[]>([]);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
 
   const handleSubmitOrder: SubmitHandler<OrderSchemaType> = (data) => {
     for (let prop in errors) {
@@ -71,7 +74,45 @@ export function CreateNewOrderTemplate({
     }
 
     if (currentStep === 4) {
-      console.log(data);
+      try {
+        createOrder(
+          {
+            customer: !data.isNewCustomer
+              ? {
+                  id: String(data.customer?.value),
+                  name: String(data.customer?.label),
+                }
+              : null,
+            phone_number: data.isNewCustomer ? String(data.phone_number) : null,
+            name: data.isNewCustomer ? String(data.name) : null,
+            address: !data.isDelivery
+              ? null
+              : {
+                  zip_code: String(data.cep),
+                  district: String(data.district),
+                  place_number: String(data.place_number),
+                  street: String(data.street),
+                  complement: data.complement,
+                },
+            order_number: 2,
+            total: totalPrice,
+            collect_date: String(data.collect_date),
+            delivery_date: String(data.delivery_date),
+            items: selectedItems,
+            isDelivery: Boolean(data.isDelivery),
+            isNewCustomer: Boolean(data.isNewCustomer),
+            description: data.description ?? "",
+            status: "UNFINISHED",
+          },
+          lastOrderNumber
+        );
+
+        toast.success("Pedido criado com sucesso.");
+        router.push("/pedidos");
+      } catch (error) {
+        console.error(error);
+        toast.error("Erro ao criar novo pedido. Tente novamente.");
+      }
       return;
     }
 
@@ -114,6 +155,8 @@ export function CreateNewOrderTemplate({
               itemsData={itemsData}
               selectedItems={selectedItems}
               setSelectedItems={setSelectedItems}
+              totalPrice={totalPrice}
+              setTotalPrice={setTotalPrice}
             />
           )}
           {currentStep === 3 && (
@@ -123,6 +166,8 @@ export function CreateNewOrderTemplate({
             <ConfirmationStep
               selectedItems={selectedItems}
               orderData={getValues()}
+              totalPrice={totalPrice}
+              register={register}
             />
           )}
           <div className="flex justify-between my-16">
