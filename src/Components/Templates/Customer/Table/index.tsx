@@ -6,7 +6,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { Edit2, Trash2 } from "lucide-react";
 import { useRouter } from "next/router";
 
-const columnHelper = createColumnHelper<any>();
+const columnHelper = createColumnHelper<ICustomers>();
 
 type ItemsTableProps = {
   customersData: ICustomers[];
@@ -33,7 +33,7 @@ export function CustomerTable({
       cell: (info) => <Text className="text-base">{info.getValue()}</Text>,
       header: "Telefone",
     }),
-    columnHelper.accessor("", {
+    columnHelper.accessor("id", {
       cell: (info) => (
         <div className="flex gap-4">
           <Button

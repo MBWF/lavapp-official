@@ -12,7 +12,7 @@ const columnHelper = createColumnHelper<any>();
 
 type ItemsTableProps = {
   itemsData: IItems[];
-  setCurrentItem: Dispatch<SetStateAction<any>>;
+  setCurrentItem: Dispatch<SetStateAction<IItems>>;
   handleDelete: (id: string) => Promise<void>;
 };
 

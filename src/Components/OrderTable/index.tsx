@@ -1,27 +1,22 @@
+import { IOrders } from "@/types/Orders";
 import { Text } from "@/ui";
+import { openModal } from "@/utils/handleModal";
 import translateOrder from "@/utils/translateOrder";
 import { CheckCircle, ConciergeBell, Truck, XCircle } from "lucide-react";
+import { Dispatch, SetStateAction } from "react";
 
 type OrderCardProps = {
-  orders: {
-    name: string;
-    hour: string;
-    item_code: string;
-    status: string;
-    isDelivery?: boolean;
-  }[];
+  setSelectedOrder: Dispatch<SetStateAction<IOrders>>;
+  orders: IOrders[];
 };
 
-export function OrderCard({ orders }: OrderCardProps) {
+export function OrderCard({ orders, setSelectedOrder }: OrderCardProps) {
   return (
     <table className="text-left w-full border-collapse">
       <thead className="bg-primary">
         <tr>
           <th className="py-4 px-6 font-bold uppercase text-sm text-white border-b border-grey-light">
             Cliente
-          </th>
-          <th className="py-4 px-6 font-bold uppercase text-sm text-white border-b border-grey-light">
-            Horário
           </th>
           <th className="py-4 px-6 font-bold uppercase text-sm text-white border-b border-grey-light">
             Modalidade
@@ -33,14 +28,18 @@ export function OrderCard({ orders }: OrderCardProps) {
       </thead>
       <tbody>
         {orders.map((order) => (
-          <tr className="hover:bg-grey-lighter" key={order.name}>
-            <td className="py-4 px-6 border-b  border-grey-light">
+          <tr
+            className="hover:bg-gray-200 cursor-pointer"
+            key={order.name}
+            onClick={() => {
+              setSelectedOrder(order);
+              openModal("orderDetailsModal");
+            }}
+          >
+            <td className="py-4 px-6 border-b border-grey-light">
               <Text className="mr-16 w-32 text-lg overflow-hidden truncate">
                 {order.name}
               </Text>
-            </td>
-            <td className="py-4 px-6 w-40 text-center border-b border-grey-light">
-              <Text className="mr-16 w-32">{order.hour}hrs</Text>
             </td>
             <td className="py-4 px-6 text-center border-b border-grey-light">
               {order.isDelivery ? (
