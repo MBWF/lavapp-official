@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/Auth/useAuth";
-import { Button, Dropdown } from "@/ui";
+import { Button } from "@/ui";
 import Image from "next/image";
 import Link from "next/link";
 

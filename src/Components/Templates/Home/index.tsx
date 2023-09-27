@@ -4,6 +4,86 @@ import { IOrders } from "@/types/Orders";
 import { Heading, Text } from "@/ui";
 import { useState } from "react";
 
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
+import { Bar, Pie } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+export const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top" as const,
+    },
+  },
+};
+
+const labels = [
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+];
+
+export const data = {
+  labels,
+  datasets: [
+    {
+      label: "Peças lavadas",
+      data: labels.map(() => Math.random() * 50),
+      backgroundColor: "rgba(0, 162, 255, 0.5)",
+    },
+  ],
+};
+
+export const Piedata = {
+  labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+  datasets: [
+    {
+      label: "Total de Peças",
+      data: [12, 19, 3, 5, 2, 3],
+      backgroundColor: [
+        "rgba(255, 0, 55, 0.2)",
+        "rgba(54, 162, 235, 0.2)",
+        "rgba(255, 206, 86, 0.2)",
+        "rgba(75, 192, 192, 0.2)",
+        "rgba(153, 102, 255, 0.2)",
+        "rgba(255, 159, 64, 0.2)",
+      ],
+      borderColor: [
+        "red",
+        "blue",
+        "rgba(255, 206, 86, 1)",
+        "rgba(75, 192, 192, 1)",
+        "rgba(153, 102, 255, 1)",
+        "rgba(255, 159, 64, 1)",
+      ],
+      borderWidth: 1,
+    },
+  ],
+};
+
 export function HomePage({ todayOrders }: { todayOrders: IOrders[] }) {
   const [selectedOrder, setSelectedOrder] = useState<IOrders>({} as IOrders);
   return (
@@ -11,6 +91,10 @@ export function HomePage({ todayOrders }: { todayOrders: IOrders[] }) {
       {selectedOrder && <OrderDetailsModal defaultValues={selectedOrder} />}
       <Heading>Home</Heading>
 
+      <div className="flex gap-16 h-80">
+        <Bar options={options} data={data} />
+        <Pie data={Piedata} />
+      </div>
       <div className="flex flex-col justify-between">
         <aside className="flex flex-col my-8 w-full">
           <Text className="text-2xl text-center w-fit my-4">

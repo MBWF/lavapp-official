@@ -52,14 +52,6 @@ export function OrdersTable({
       ),
       header: "Tot. de peças",
     }),
-    columnHelper.accessor("status", {
-      cell: (info) => (
-        <span>
-          <OrderStatus status={info.getValue()} />
-        </span>
-      ),
-      header: "Status",
-    }),
     columnHelper.accessor("id", {
       cell: (info) => (
         <div className="flex gap-4">

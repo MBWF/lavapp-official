@@ -5,3 +5,4 @@ export * from "./Modal";
 export * from "./FullCalendar";
 export * from "./OrderIsDelivery";
 export * from "./OrderStatus";
+export * from "./OrderStatusHandler";

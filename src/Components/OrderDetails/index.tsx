@@ -5,6 +5,7 @@ import { IOrders } from "@/types/Orders";
 import { convertDateToShow } from "@/utils/convertDate";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { closeModal } from "@/utils/handleModal";
+import { OrderStatusHandler } from "..";
 
 export function OrderDetailsModal({
   defaultValues,
@@ -101,6 +102,9 @@ export function OrderDetailsModal({
                 </Text>
               </div>
             </div>
+          </div>
+          <div className="my-6">
+            <OrderStatusHandler currentStep={5} />
           </div>
         </div>
 

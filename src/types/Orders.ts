@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type IOrders = {
   id?: string;
   order_number: number;
@@ -26,4 +28,12 @@ export type IOrders = {
     street: string;
     complement?: string;
   } | null;
+};
+
+export type IOrderStatus = {
+  SCREENING: { icon: ReactNode; label: string };
+  WASHING: { icon: ReactNode; label: string };
+  IRONING: { icon: ReactNode; label: string };
+  FINISHED: { icon: ReactNode; label: string };
+  DELIVERED: { icon: ReactNode; label: string };
 };
