@@ -20,7 +20,10 @@ export type IOrders = {
   isDelivery: boolean;
   isNewCustomer: boolean;
   description: string;
-  status: string;
+  status: {
+    id: number;
+    name: "SORTING" | "WASHING" | "IRONING" | "FINISHED" | "DELIVERED";
+  };
   address?: {
     zip_code: string;
     district: string;

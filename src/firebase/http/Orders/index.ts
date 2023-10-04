@@ -1,5 +1,6 @@
 import { db } from "@/firebase/firebase";
 import { IOrders } from "@/types/Orders";
+import { ORDER_STATUS } from "@/utils/OrderStatus";
 import {
   Unsubscribe,
   addDoc,
@@ -9,11 +10,28 @@ import {
   getDocs,
   onSnapshot,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { Dispatch, SetStateAction } from "react";
 
 const OrdersCollectionRef = collection(db, "orders");
+
+function handleNextStatus(currentStatusId: number) {
+  const nextStatus = ORDER_STATUS.find(
+    (status) => currentStatusId + 1 === status.id
+  );
+
+  return nextStatus;
+}
+
+function handlePreviousStatus(currentStatusId: number) {
+  const previousStatus = ORDER_STATUS.find(
+    (status) => currentStatusId - 1 === status.id
+  );
+
+  return previousStatus;
+}
 
 export const getOrders = async () => {
   const data = await getDocs(OrdersCollectionRef);
@@ -69,4 +87,36 @@ export const createOrder = async (data: IOrders, lastOrderNumber: number) => {
 export const deleteOrder = async (orderId: string) => {
   const orderDoc = doc(db, "orders", orderId);
   await deleteDoc(orderDoc);
+};
+
+export const handleNextOrderStatus = async (
+  currentStatusId: number,
+  orderId: string
+) => {
+  if (currentStatusId >= 5) return;
+  const nextStep = handleNextStatus(currentStatusId);
+
+  const orderDoc = doc(db, "orders", orderId);
+
+  const newData = {
+    status: nextStep,
+  };
+
+  await updateDoc(orderDoc, newData);
+};
+
+export const handlePreviousOrderStatus = async (
+  currentStatusId: number,
+  orderId: string
+) => {
+  if (currentStatusId <= 1) return;
+  const previousStep = handlePreviousStatus(currentStatusId);
+
+  const orderDoc = doc(db, "orders", orderId);
+
+  const newData = {
+    status: previousStep,
+  };
+
+  await updateDoc(orderDoc, newData);
 };

@@ -1,11 +1,16 @@
 import { Modal } from "@/components/Modal";
-import { Text } from "@/ui";
+import { Button, Text } from "@/ui";
 
 import { IOrders } from "@/types/Orders";
 import { convertDateToShow } from "@/utils/convertDate";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { closeModal } from "@/utils/handleModal";
 import { OrderStatusHandler } from "..";
+import {
+  handleNextOrderStatus,
+  handlePreviousOrderStatus,
+} from "@/firebase/http/Orders";
+import { toast } from "react-toastify";
 
 export function OrderDetailsModal({
   defaultValues,
@@ -14,6 +19,35 @@ export function OrderDetailsModal({
 }) {
   const onCloseModal = () => {
     closeModal("orderDetailsModal");
+  };
+
+  const nextStep = () => {
+    if (defaultValues.status.id >= 5) {
+      toast.warning("O pedido já está no último passo.");
+      return;
+    }
+    try {
+      handleNextOrderStatus(defaultValues.status.id, String(defaultValues.id));
+      toast.success("Status do pedido atualizado com sucesso.");
+    } catch (error) {
+      toast.error("Erro ao atualizar o status do pedido.");
+    }
+  };
+
+  const previousStep = () => {
+    if (defaultValues.status.id <= 1) {
+      toast.warning("O pedido já está no primeiro passo.");
+      return;
+    }
+    try {
+      handlePreviousOrderStatus(
+        defaultValues.status.id,
+        String(defaultValues.id)
+      );
+      toast.success("Status do pedido atualizado com sucesso.");
+    } catch (error) {
+      toast.error("Erro ao atualizar o status do pedido.");
+    }
   };
 
   return (
@@ -104,7 +138,15 @@ export function OrderDetailsModal({
             </div>
           </div>
           <div className="my-6">
-            <OrderStatusHandler currentStep={5} />
+            <OrderStatusHandler currentStep={defaultValues.status?.id} />
+
+            <div className="flex my-4 justify-between">
+              <Button onClick={previousStep} variant="outlined">
+                Voltar Etapa
+              </Button>
+
+              <Button onClick={nextStep}>Avançar Etapa</Button>
+            </div>
           </div>
         </div>
 

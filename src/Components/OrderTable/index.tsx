@@ -30,7 +30,7 @@ export function OrderCard({ orders, setSelectedOrder }: OrderCardProps) {
         {orders.map((order) => (
           <tr
             className="hover:bg-gray-200 cursor-pointer"
-            key={order.name}
+            key={order.id}
             onClick={() => {
               setSelectedOrder(order);
               openModal("orderDetailsModal");
@@ -38,7 +38,7 @@ export function OrderCard({ orders, setSelectedOrder }: OrderCardProps) {
           >
             <td className="py-4 px-6 border-b border-grey-light">
               <Text className="mr-16 w-32 text-lg overflow-hidden truncate">
-                {order.name}
+                {order.name ?? order.customer?.name}
               </Text>
             </td>
             <td className="py-4 px-6 text-center border-b border-grey-light">
@@ -56,9 +56,9 @@ export function OrderCard({ orders, setSelectedOrder }: OrderCardProps) {
               <Text className="text-lg text-center flex items-center">
                 <div
                   className="tooltip"
-                  data-tip={translateOrder(order.status)}
+                  data-tip={translateOrder(order.status.name)}
                 >
-                  {order.status === "FINISHED" ? (
+                  {order.status.name === "FINISHED" ? (
                     <CheckCircle color="green" />
                   ) : (
                     <XCircle color="red" />

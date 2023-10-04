@@ -48,8 +48,8 @@ export function CreateOrderProvider({ children }: AuthContextProps) {
         order_number: doc.data().order_number,
       }));
       setLastOrderNumber(
-        allOrdersOrderedByNumber[allOrdersOrderedByNumber.length - 1]
-          .order_number
+        allOrdersOrderedByNumber[allOrdersOrderedByNumber?.length - 1]
+          ?.order_number
       );
     });
 

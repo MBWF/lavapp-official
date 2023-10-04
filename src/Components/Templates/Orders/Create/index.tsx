@@ -102,7 +102,10 @@ export function CreateNewOrderTemplate({
             isDelivery: Boolean(data.isDelivery),
             isNewCustomer: Boolean(data.isNewCustomer),
             description: data.description ?? "",
-            status: "UNFINISHED",
+            status: {
+              id: 1,
+              name: "SORTING",
+            },
           },
           lastOrderNumber
         );
