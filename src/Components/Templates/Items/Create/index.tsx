@@ -1,12 +1,13 @@
 import { Modal } from "@/components/Modal";
 import { createItem } from "@/firebase/http/items";
-import { Button, CurrencyInput, Input } from "@/ui";
+import { Button, CurrencyInput, DefaultSelectInput, Input } from "@/ui";
 import { closeModal } from "@/utils/handleModal";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { ItemsValidation, itemsSchema } from "./validations";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UNIT_LiST } from "@/types/Items";
 
 export function CreateItemModal() {
   const queryClient = useQueryClient();
@@ -29,7 +30,8 @@ export function CreateItemModal() {
   };
 
   const { mutateAsync } = useMutation({
-    mutationFn: (data: ItemsValidation) => createItem(data),
+    mutationFn: (data: ItemsValidation) =>
+      createItem({ ...data, un: data.un.value }),
     onSuccess: () => {
       queryClient.invalidateQueries(["items"]);
       onCloseModal();
@@ -52,7 +54,10 @@ export function CreateItemModal() {
       title="Nova Peça"
       onCloseModal={onCloseModal}
     >
-      <form onSubmit={handleSubmit(submitNewItem)}>
+      <form
+        onSubmit={handleSubmit(submitNewItem)}
+        className="flex flex-col gap-4"
+      >
         <div className="flex gap-4 mb-4">
           <Input
             label="Nome"
@@ -68,12 +73,19 @@ export function CreateItemModal() {
             error={errors.price}
           />
         </div>
-        <div className="w-1/2">
-          <Input
-            label="Unidade"
-            placeholder="Insira o tipo de unidade da peça"
-            hasError={errors.un?.message}
-            {...register("un")}
+        <div className="w-full">
+          <Controller
+            name="un"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <DefaultSelectInput
+                defaultOptions={UNIT_LiST}
+                label="Unidade"
+                placeholder="Selecione a unidade da peça"
+                hasError={error?.message}
+                {...field}
+              />
+            )}
           />
         </div>
 

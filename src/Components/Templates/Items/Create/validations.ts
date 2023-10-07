@@ -13,7 +13,10 @@ export const itemsSchema = z.object({
       Number(val.replace(/R\$ |\.|,/g, (match) => (match === "," ? "." : "")))
     ),
 
-  un: z.string({ required_error: REQUIRED_ERROR }).nonempty(NON_EMPTY),
+  un: z.object(
+    { label: z.string(), value: z.string() },
+    { required_error: REQUIRED_ERROR }
+  ),
 });
 
 export type ItemsValidation = z.infer<typeof itemsSchema>;

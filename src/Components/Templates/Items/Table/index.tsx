@@ -32,7 +32,9 @@ export function ItemsTable({
       header: "Nome",
     }),
     columnHelper.accessor("un", {
-      cell: (info) => <span>{info.getValue()}</span>,
+      cell: (info) => (
+        <span>{info.getValue() === "pair" ? "Par" : "Unidade"}</span>
+      ),
       header: "Unidade",
     }),
     columnHelper.accessor("price", {

@@ -118,7 +118,6 @@ export default function EditCustomer({ customerData }: EditCustomerPageProps) {
                   placeholder="Insira o número de cpf"
                   onChange={onChange}
                   value={value}
-                  hasError={!!error?.message}
                   mask="999.999.999-99"
                   maskChar=""
                 />
@@ -139,7 +138,6 @@ export default function EditCustomer({ customerData }: EditCustomerPageProps) {
                   placeholder="Insira o número do telefone"
                   onChange={onChange}
                   value={value}
-                  hasError={!!error?.message}
                   mask="99 99999-9999"
                   maskChar=""
                 />
