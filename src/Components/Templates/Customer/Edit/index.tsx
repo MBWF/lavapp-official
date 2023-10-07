@@ -59,6 +59,7 @@ export default function EditCustomer({ customerData }: EditCustomerPageProps) {
           cpf: data.cpf,
           phone_number: data.phone_number,
           code: data.item_code,
+          email: data.email,
           birthdate: data.birthdate,
           gender: data.gender.value,
           address: {
@@ -233,7 +234,9 @@ export default function EditCustomer({ customerData }: EditCustomerPageProps) {
         >
           Cancelar
         </Button>
-        <Button type="submit">Cadastrar</Button>
+        <Button type="submit" className="w-32">
+          Editar
+        </Button>
       </div>
     </form>
   );

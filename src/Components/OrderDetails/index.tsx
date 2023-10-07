@@ -11,43 +11,68 @@ import {
   handlePreviousOrderStatus,
 } from "@/firebase/http/Orders";
 import { toast } from "react-toastify";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export function OrderDetailsModal({
-  defaultValues,
-}: {
+type OrderDetailsModalProps = {
   defaultValues: IOrders;
-}) {
+};
+
+export function OrderDetailsModal({ defaultValues }: OrderDetailsModalProps) {
+  const queryClient = useQueryClient();
   const onCloseModal = () => {
     closeModal("orderDetailsModal");
   };
 
-  const nextStep = () => {
+  const { mutateAsync: previousStepMutation } = useMutation(
+    () =>
+      handlePreviousOrderStatus(
+        defaultValues.status.id,
+        String(defaultValues.id)
+      ),
+    {
+      onSuccess: () => {
+        toast.success("Status do pedido atualizado com sucesso.");
+        queryClient.invalidateQueries({ queryKey: ["orders"] });
+        onCloseModal();
+      },
+      onError: (error: Error) => {
+        toast.error("Erro ao atualizar o status do pedido.");
+        console.error(error);
+      },
+    }
+  );
+
+  const { mutateAsync: nextStepMutation } = useMutation(
+    () =>
+      handleNextOrderStatus(defaultValues.status.id, String(defaultValues.id)),
+    {
+      onSuccess: () => {
+        toast.success("Status do pedido atualizado com sucesso.");
+        queryClient.invalidateQueries({ queryKey: ["orders"] });
+        onCloseModal();
+      },
+      onError: (error: Error) => {
+        toast.error("Erro ao atualizar o status do pedido.");
+        console.error(error);
+      },
+    }
+  );
+
+  const handleNextStep = async () => {
     if (defaultValues.status.id >= 5) {
       toast.warning("O pedido já está no último passo.");
       return;
     }
-    try {
-      handleNextOrderStatus(defaultValues.status.id, String(defaultValues.id));
-      toast.success("Status do pedido atualizado com sucesso.");
-    } catch (error) {
-      toast.error("Erro ao atualizar o status do pedido.");
-    }
-  };
 
-  const previousStep = () => {
+    await nextStepMutation();
+  };
+  const handlePreviousStep = async () => {
     if (defaultValues.status.id <= 1) {
       toast.warning("O pedido já está no primeiro passo.");
       return;
     }
-    try {
-      handlePreviousOrderStatus(
-        defaultValues.status.id,
-        String(defaultValues.id)
-      );
-      toast.success("Status do pedido atualizado com sucesso.");
-    } catch (error) {
-      toast.error("Erro ao atualizar o status do pedido.");
-    }
+
+    await previousStepMutation();
   };
 
   return (
@@ -141,11 +166,11 @@ export function OrderDetailsModal({
             <OrderStatusHandler currentStep={defaultValues.status?.id} />
 
             <div className="flex my-4 justify-between">
-              <Button onClick={previousStep} variant="outlined">
+              <Button onClick={handlePreviousStep} variant="outlined">
                 Voltar Etapa
               </Button>
 
-              <Button onClick={nextStep}>Avançar Etapa</Button>
+              <Button onClick={handleNextStep}>Avançar Etapa</Button>
             </div>
           </div>
         </div>

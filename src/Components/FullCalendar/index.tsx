@@ -40,7 +40,7 @@ export default function Calendar({
           selectable={true}
           selectMirror={true}
           businessHours={{
-            daysOfWeek: [1, 2, 3, 4, 5],
+            daysOfWeek: [1, 2, 3, 4, 5, 6],
             startTime: "7:30",
             endTime: "17:30",
           }}

@@ -36,7 +36,7 @@ function handlePreviousStatus(currentStatusId: number) {
 export const getOrders = async () => {
   const data = await getDocs(OrdersCollectionRef);
 
-  return data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  return data.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as IOrders[];
 };
 
 export const getTodayOrders = async (

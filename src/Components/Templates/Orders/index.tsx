@@ -6,23 +6,31 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { OrderDetailsModal } from "../../OrderDetails";
 import { OrdersTable } from "./Table";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export type OrdersPageProps = {
   ordersData: IOrders[];
+  isLoading: boolean;
 };
 
-export function OrdersTemplate({ ordersData }: OrdersPageProps) {
+export function OrdersTemplate({ ordersData, isLoading }: OrdersPageProps) {
+  const queryClient = useQueryClient();
   const [currentItem, setCurrentItem] = useState<IOrders>({} as IOrders);
   const router = useRouter();
 
-  const handleDeleteItem = async (id: string) => {
-    try {
-      await deleteOrder(id);
+  const { mutateAsync } = useMutation((id: string) => deleteOrder(id), {
+    onSuccess: () => {
       toast.success("Pedido excluido com sucesso.");
-    } catch (error) {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (error: Error) => {
       toast.error("Erro ao excluir Pedido. Tente novamente.");
       console.error(error);
-    }
+    },
+  });
+
+  const handleDeleteOrder = async (id: string) => {
+    await mutateAsync(id);
   };
 
   return (
@@ -34,11 +42,17 @@ export function OrdersTemplate({ ordersData }: OrdersPageProps) {
           Novo Pedido
         </Button>
       </div>
-      <OrdersTable
-        ordersData={ordersData}
-        setCurrentItem={setCurrentItem}
-        handleDelete={handleDeleteItem}
-      />
+      {isLoading ? (
+        <div className="w-full flex justify-center h-40">
+          <span className="loading loading-spinner loading-lg text-primary"></span>
+        </div>
+      ) : (
+        <OrdersTable
+          ordersData={ordersData}
+          setCurrentItem={setCurrentItem}
+          handleDelete={handleDeleteOrder}
+        />
+      )}
     </section>
   );
 }

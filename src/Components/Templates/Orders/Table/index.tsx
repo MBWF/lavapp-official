@@ -1,5 +1,4 @@
 import OrderIsDelivery from "@/components/OrderIsDelivery";
-import OrderStatus from "@/components/OrderStatus";
 import { IOrders } from "@/types/Orders";
 import { Button } from "@/ui";
 import { Table } from "@/ui/Table";

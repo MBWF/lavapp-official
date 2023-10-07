@@ -16,6 +16,7 @@ import { SecondStep } from "./SecondStep";
 import { ThirdStep } from "./ThirdStep";
 import { OrderSchemaType, orderSchema } from "./validations";
 import { IItems } from "@/types/Items";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type OrdersPageProps = {
   customerData: ICustomers[];
@@ -32,6 +33,8 @@ export function CreateNewOrderTemplate({
   customerData,
   itemsData,
 }: OrdersPageProps) {
+  const queryClient = useQueryClient();
+
   const {
     register,
     control,
@@ -50,6 +53,55 @@ export function CreateNewOrderTemplate({
     useCreateOrder();
   const [selectedItems, setSelectedItems] = useState<SelectedItemsProps[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+
+  const { mutate } = useMutation(
+    (data: OrderSchemaType) =>
+      createOrder(
+        {
+          customer: !data.isNewCustomer
+            ? {
+                id: String(data.customer?.value),
+                name: String(data.customer?.label),
+              }
+            : null,
+          phone_number: data.isNewCustomer ? String(data.phone_number) : null,
+          name: data.isNewCustomer ? String(data.name) : null,
+          address: !data.isDelivery
+            ? null
+            : {
+                zip_code: String(data.cep),
+                district: String(data.district),
+                place_number: String(data.place_number),
+                street: String(data.street),
+                complement: data.complement,
+              },
+          order_number: 2,
+          total: totalPrice,
+          collect_date: String(data.collect_date),
+          delivery_date: String(data.delivery_date),
+          items: selectedItems,
+          isDelivery: Boolean(data.isDelivery),
+          isNewCustomer: Boolean(data.isNewCustomer),
+          description: data.description ?? "",
+          status: {
+            id: 1,
+            name: "SORTING",
+          },
+        },
+        lastOrderNumber
+      ),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["orders"]);
+        toast.success("Pedido criado com sucesso.");
+        router.push("/pedidos");
+      },
+      onError: (error: Error) => {
+        toast.error("Erro ao criar novo pedido. Tente novamente.");
+        console.error(error);
+      },
+    }
+  );
 
   const handleSubmitOrder: SubmitHandler<OrderSchemaType> = (data) => {
     for (let prop in errors) {
@@ -75,48 +127,7 @@ export function CreateNewOrderTemplate({
     }
 
     if (currentStep === 4) {
-      try {
-        createOrder(
-          {
-            customer: !data.isNewCustomer
-              ? {
-                  id: String(data.customer?.value),
-                  name: String(data.customer?.label),
-                }
-              : null,
-            phone_number: data.isNewCustomer ? String(data.phone_number) : null,
-            name: data.isNewCustomer ? String(data.name) : null,
-            address: !data.isDelivery
-              ? null
-              : {
-                  zip_code: String(data.cep),
-                  district: String(data.district),
-                  place_number: String(data.place_number),
-                  street: String(data.street),
-                  complement: data.complement,
-                },
-            order_number: 2,
-            total: totalPrice,
-            collect_date: String(data.collect_date),
-            delivery_date: String(data.delivery_date),
-            items: selectedItems,
-            isDelivery: Boolean(data.isDelivery),
-            isNewCustomer: Boolean(data.isNewCustomer),
-            description: data.description ?? "",
-            status: {
-              id: 1,
-              name: "SORTING",
-            },
-          },
-          lastOrderNumber
-        );
-
-        toast.success("Pedido criado com sucesso.");
-        router.push("/pedidos");
-      } catch (error) {
-        console.error(error);
-        toast.error("Erro ao criar novo pedido. Tente novamente.");
-      }
+      mutate(data);
       return;
     }
 

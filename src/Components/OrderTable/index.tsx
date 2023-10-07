@@ -43,12 +43,12 @@ export function OrderCard({ orders, setSelectedOrder }: OrderCardProps) {
             </td>
             <td className="py-4 px-6 text-center border-b border-grey-light">
               {order.isDelivery ? (
-                <Text className="flex items-center text-lg gap-2 text-blue-900 ">
-                  Delivery <ConciergeBell className="mt-1" />
+                <Text className="flex items-center text-lg gap-2 text-green-400 ">
+                  Delivery <Truck className="mt-1" />
                 </Text>
               ) : (
-                <Text className="flex items-center gap-2 text-lg text-green-400 ">
-                  Entrega <Truck className="mt-1" />
+                <Text className="flex items-center gap-2 text-lg text-blue-900  ">
+                  Retirada <ConciergeBell className="mt-1" />
                 </Text>
               )}
             </td>

@@ -2,26 +2,30 @@ import { Layout } from "@/components";
 import { OrdersTemplate } from "@/components/Templates/Orders";
 import { getOrders } from "@/firebase/http/Orders";
 import { IOrders } from "@/types/Orders";
-import { GetServerSideProps } from "next";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
-export type OrdersPageProps = {
-  ordersData: IOrders[];
-};
-
-export default function OrdersPage({ ordersData }: OrdersPageProps) {
+export default function OrdersPage() {
+  const {
+    data: ordersData,
+    isLoading,
+    isFetching,
+  } = useQuery({
+    queryKey: ["orders"],
+    queryFn: () => getOrders(),
+    onError: () => {
+      toast.error("Erro ao buscar peças. Tente novamente");
+    },
+  });
   return (
     <Layout>
-      <OrdersTemplate ordersData={ordersData} />
+      {ordersData && (
+        <OrdersTemplate
+          ordersData={ordersData as IOrders[]}
+          isLoading={isLoading || isFetching}
+        />
+      )}
     </Layout>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const ordersResponse = await getOrders();
-
-  return {
-    props: {
-      ordersData: ordersResponse,
-    },
-  };
-};
