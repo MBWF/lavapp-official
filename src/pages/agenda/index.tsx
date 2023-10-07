@@ -17,6 +17,7 @@ export default function Agenda() {
     onError: () => {
       toast.error("Erro ao buscar peças. Tente novamente");
     },
+    refetchOnWindowFocus: false,
   });
 
   const handleSelectEvent = (id: string) => {

@@ -41,6 +41,7 @@ export function ItemsPage({ itemsData, isLoading }: ItemsPageProps) {
       <div className="flex justify-between items-center mb-8">
         <Heading>Peças</Heading>
         <Button
+          data-testid="createItemButton"
           onClick={() => {
             setCurrentItem(null);
             openModal("createItemModal");

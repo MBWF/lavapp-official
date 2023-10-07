@@ -29,7 +29,6 @@ export const customerSchema = z
     birthdate: z
       .string({
         invalid_type_error: "Insira uma data",
-        required_error: REQUIRED_ERROR,
       })
       .nullable()
       .optional()

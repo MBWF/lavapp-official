@@ -4,7 +4,6 @@ import { getCustomers } from "@/firebase/http/customers";
 import { ICustomers } from "@/types/Customers";
 import { useQuery } from "@tanstack/react-query";
 
-import { GetServerSideProps } from "next";
 import { toast } from "react-toastify";
 
 export default function Customer() {
@@ -20,6 +19,7 @@ export default function Customer() {
         "Erro ao buscar clientes. Atualize a página e tente novamente"
       );
     },
+    refetchOnWindowFocus: false,
   });
 
   return (

@@ -11,15 +11,20 @@ import { ICustomers } from "@/types/Customers";
 import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+type CreateCustomerProps = {
+  handleSubmitForm: (data: CustomerSchemaType) => void;
+};
+
 const genderList = [
   { value: "MALE", label: "Masculino" },
   { value: "FEMALE", label: "Feminino" },
   { value: "OTHER", label: "Outros" },
 ];
 
-export default function CreateCustomer() {
+export default function CreateCustomer({
+  handleSubmitForm,
+}: CreateCustomerProps) {
   const router = useRouter();
-  const queryClient = useQueryClient();
 
   const {
     register,
@@ -30,45 +35,11 @@ export default function CreateCustomer() {
     resolver: zodResolver(customerSchema),
   });
 
-  const { mutateAsync } = useMutation({
-    mutationFn: (data: CustomerSchemaType) =>
-      createCustomer({
-        name: data.name,
-        cpf: data.cpf,
-        phone_number: data.phone_number,
-        code: data.item_code,
-        email: data.email,
-        birthdate: data.birthdate,
-        gender: data.gender.value,
-        address: {
-          district: data.district,
-          number: data.place_number,
-          street: data.street,
-          state: data.state,
-          zip_code: data.cep,
-          city: data.city,
-          complement: data.complement,
-        },
-      } as ICustomers),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["customers"]);
-      toast.success("Cliente cadastrado com sucesso.");
-      router.push("/clientes");
-    },
-    onError: (error: Error) => {
-      toast.error("Erro ao cadastrado cliente.");
-      console.error(error);
-    },
-  });
-
-  const handleCreateCustomer: SubmitHandler<CustomerSchemaType> = (data) => {
-    mutateAsync(data);
-  };
-
   return (
     <form
+      data-testid="createCustomerForm"
       className="shadow-lg p-8 flex flex-col w-full"
-      onSubmit={handleSubmit(handleCreateCustomer)}
+      onSubmit={handleSubmit(handleSubmitForm)}
     >
       <Heading className="w-full">Novo Cliente</Heading>
       <section className="flex gap-8">
@@ -94,7 +65,6 @@ export default function CreateCustomer() {
                   placeholder="Insira o número de cpf"
                   onChange={onChange}
                   value={value}
-                  hasError={!!error?.message}
                   mask="999.999.999-99"
                   maskChar=""
                 />
@@ -115,7 +85,6 @@ export default function CreateCustomer() {
                   placeholder="Insira o número do telefone"
                   onChange={onChange}
                   value={value}
-                  hasError={!!error?.message}
                   mask="99 99999-9999"
                   maskChar=""
                 />

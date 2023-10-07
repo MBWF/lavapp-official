@@ -42,6 +42,8 @@ const DefaultSelectStyled = (
       <label htmlFor="select">{label}</label>
       <Select
         data-testid="selectInput"
+        aria-label={label}
+        aria-labelledby={label}
         isMulti={isMulti}
         styles={selectStyles}
         isDisabled={isDisabled}

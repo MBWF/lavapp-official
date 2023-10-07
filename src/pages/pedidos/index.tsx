@@ -16,6 +16,7 @@ export default function OrdersPage() {
     onError: () => {
       toast.error("Erro ao buscar peças. Tente novamente");
     },
+    refetchOnWindowFocus: false,
   });
   return (
     <Layout>

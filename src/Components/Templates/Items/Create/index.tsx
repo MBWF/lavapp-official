@@ -46,7 +46,12 @@ export function CreateItemModal() {
   };
 
   return (
-    <Modal id="createItemModal" title="Nova Peça" onCloseModal={onCloseModal}>
+    <Modal
+      id="createItemModal"
+      data-testid="createItemModal"
+      title="Nova Peça"
+      onCloseModal={onCloseModal}
+    >
       <form onSubmit={handleSubmit(submitNewItem)}>
         <div className="flex gap-4 mb-4">
           <Input

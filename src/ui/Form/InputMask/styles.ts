@@ -1,10 +1,8 @@
 import styled from "styled-components";
 
-interface ContainerProps {
-  hasError: boolean;
-}
 
-export const ContainerInputMask = styled.div<ContainerProps>`
+
+export const ContainerInputMask = styled.div`
   display: flex;
   flex-direction: column;
 
