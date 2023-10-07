@@ -1,20 +1,25 @@
-import React from "react";
-import type { AppProps } from "next/app";
 import { AuthProvider } from "@/contexts/Auth/useAuth";
+import type { AppProps } from "next/app";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { ToastContainer } from "react-toastify";
 
+import { CreateOrderProvider } from "@/contexts/Order/useCreateOrder";
 import "@/styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
-import { CreateOrderProvider } from "@/contexts/Order/useCreateOrder";
+
+const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <AuthProvider>
-      <CreateOrderProvider>
-        <Component {...pageProps} />
-        <ToastContainer theme="colored" />
-      </CreateOrderProvider>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <CreateOrderProvider>
+          <Component {...pageProps} />
+          <ToastContainer theme="colored" />
+        </CreateOrderProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

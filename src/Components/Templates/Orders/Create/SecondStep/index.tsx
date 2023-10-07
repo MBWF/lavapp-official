@@ -1,5 +1,6 @@
-import { IItems } from "@/pages/pecas";
+import { IItems } from "@/types/Items";
 import { Button, DefaultSelectInput, Input, Text } from "@/ui";
+import { formatCurrency } from "@/utils/formatCurrency";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import {
   Dispatch,
@@ -9,7 +10,6 @@ import {
   useState,
 } from "react";
 import { SelectedItemsProps } from "..";
-import { formatCurrency } from "@/utils/formatCurrency";
 
 export type SecondStepProps = {
   itemsData: IItems[];
@@ -105,7 +105,7 @@ export function SecondStep({
     });
 
     setTotalPrice(value);
-  }, [itemsData, selectedItems]);
+  }, [itemsData, selectedItems, setTotalPrice]);
 
   useEffect(() => {
     handleGetItemsPrice();

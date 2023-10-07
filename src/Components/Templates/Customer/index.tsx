@@ -4,22 +4,30 @@ import { useRouter } from "next/router";
 import { CustomerTable } from "./Table";
 import { deleteCustomer } from "@/firebase/http/customers";
 import { toast } from "react-toastify";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export function CustomerPage({
-  customersData,
-}: {
+type CustomerPageProps = {
   customersData: ICustomers[];
-}) {
-  const router = useRouter();
+  isLoading: boolean;
+};
 
-  const handleDeleteCustomer = async (id: string) => {
-    try {
-      await deleteCustomer(id);
+export function CustomerPage({ customersData, isLoading }: CustomerPageProps) {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const { mutateAsync } = useMutation((id: string) => deleteCustomer(id), {
+    onSuccess: () => {
       toast.success("Cliente deletado com sucesso.");
-    } catch (error) {
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+    },
+    onError: (error: Error) => {
       toast.error("Erro ao deletar cliente. Tente novamente.");
       console.error(error);
-    }
+    },
+  });
+
+  const handleDeleteCustomer = async (id: string) => {
+    await mutateAsync(id);
   };
 
   return (
@@ -30,10 +38,16 @@ export function CustomerPage({
           Novo Cliente
         </Button>
       </div>
-      <CustomerTable
-        customersData={customersData}
-        handleDelete={handleDeleteCustomer}
-      />
+      {isLoading ? (
+        <div className="w-full flex justify-center h-40">
+          <span className="loading loading-spinner loading-lg text-primary"></span>
+        </div>
+      ) : (
+        <CustomerTable
+          customersData={customersData}
+          handleDelete={handleDeleteCustomer}
+        />
+      )}
     </section>
   );
 }

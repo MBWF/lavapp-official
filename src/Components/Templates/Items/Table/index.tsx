@@ -1,4 +1,4 @@
-import { IItems } from "@/pages/pecas";
+import { IItems } from "@/types/Items";
 import { Button } from "@/ui";
 import { Table } from "@/ui/Table";
 import { formatCurrency } from "@/utils/formatCurrency";
@@ -12,7 +12,7 @@ const columnHelper = createColumnHelper<any>();
 
 type ItemsTableProps = {
   itemsData: IItems[];
-  setCurrentItem: Dispatch<SetStateAction<IItems>>;
+  setCurrentItem: Dispatch<SetStateAction<IItems | null>>;
   handleDelete: (id: string) => Promise<void>;
 };
 

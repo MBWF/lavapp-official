@@ -9,7 +9,10 @@ export const itemsSchema = z.object({
       invalid_type_error: "Insira o valor.",
     })
     .nonempty(NON_EMPTY)
-    .transform((val) => Number(val.replace(/[^\d.-]/g, ""))),
+    .transform((val) =>
+      Number(val.replace(/R\$ |\.|,/g, (match) => (match === "," ? "." : "")))
+    ),
+
   un: z.string({ required_error: REQUIRED_ERROR }).nonempty(NON_EMPTY),
 });
 

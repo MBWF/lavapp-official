@@ -9,6 +9,7 @@ import { CustomerSchemaType, customerSchema } from "./validations";
 import { createCustomer } from "@/firebase/http/customers";
 import { ICustomers } from "@/types/Customers";
 import { toast } from "react-toastify";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const genderList = [
   { value: "MALE", label: "Masculino" },
@@ -18,6 +19,7 @@ const genderList = [
 
 export default function CreateCustomer() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -28,8 +30,8 @@ export default function CreateCustomer() {
     resolver: zodResolver(customerSchema),
   });
 
-  const handleCreateCustomer: SubmitHandler<CustomerSchemaType> = (data) => {
-    try {
+  const { mutateAsync } = useMutation({
+    mutationFn: (data: CustomerSchemaType) =>
       createCustomer({
         name: data.name,
         cpf: data.cpf,
@@ -44,12 +46,20 @@ export default function CreateCustomer() {
           zip_code: data.cep,
           complement: data.complement,
         },
-      } as ICustomers);
+      } as ICustomers),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["customers"]);
       toast.success("Cliente cadastrado com sucesso.");
       router.push("/clientes");
-    } catch (error) {
+    },
+    onError: (error: Error) => {
       toast.error("Erro ao cadastrado cliente.");
-    }
+      console.error(error);
+    },
+  });
+
+  const handleCreateCustomer: SubmitHandler<CustomerSchemaType> = (data) => {
+    mutateAsync(data);
   };
 
   return (

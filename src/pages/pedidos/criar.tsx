@@ -3,8 +3,8 @@ import { CreateNewOrderTemplate } from "@/components/Templates/Orders/Create";
 import { getCustomers } from "@/firebase/http/customers";
 import { getItems } from "@/firebase/http/items";
 import { ICustomers } from "@/types/Customers";
+import { IItems } from "@/types/Items";
 import { GetServerSideProps } from "next";
-import { IItems } from "../pecas";
 
 type OrdersPageProps = {
   customerData: ICustomers[];

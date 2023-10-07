@@ -1,6 +1,6 @@
 import { useCreateOrder } from "@/contexts/Order/useCreateOrder";
 import { createOrder } from "@/firebase/http/Orders";
-import { IItems } from "@/pages/pecas";
+
 import { ICustomers } from "@/types/Customers";
 import { Button, Heading } from "@/ui";
 import { REQUIRED_ERROR } from "@/utils/ErrorsMessages";
@@ -15,6 +15,7 @@ import { FirstStep } from "./FirstStep";
 import { SecondStep } from "./SecondStep";
 import { ThirdStep } from "./ThirdStep";
 import { OrderSchemaType, orderSchema } from "./validations";
+import { IItems } from "@/types/Items";
 
 type OrdersPageProps = {
   customerData: ICustomers[];

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { auth } from "@/firebase/auth";
 import {
   User,

@@ -5,16 +5,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-import { IItems } from "@/pages/pecas";
-import { useEffect } from "react";
-import { ItemsValidation, itemsSchema } from "./validations";
 import { editItem } from "@/firebase/http/items";
+import { IItems } from "@/types/Items";
+import { useEffect } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ItemsValidation, itemsSchema } from "./validations";
 
 export function EditItemModal({
   defaultValues,
 }: {
   defaultValues: IItems | null;
 }) {
+  const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
@@ -39,19 +42,27 @@ export function EditItemModal({
     setValue("price", String(defaultValues?.price));
   }, [defaultValues, setValue]);
 
-  const submitNewItem: SubmitHandler<ItemsValidation> = async (data) => {
-    try {
-      //TODO - fazer formatação para aceitar números decimais
+  const { mutateAsync } = useMutation(
+    (data: ItemsValidation) =>
       editItem(
         { ...data, price: Number(data.price) },
         String(defaultValues?.id)
-      );
-      onCloseModal();
-      toast.success("Peça editada com sucesso.");
-    } catch (error) {
-      toast.error("Erro ao editar peça. Tente novamente.");
-      console.error(error);
+      ),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["items"]);
+        onCloseModal();
+        toast.success("Peça editada com sucesso.");
+      },
+      onError: (error: Error) => {
+        toast.error("Erro ao editar peça. Tente novamente.");
+        console.error(error);
+      },
     }
+  );
+
+  const submitNewItem: SubmitHandler<ItemsValidation> = async (data) => {
+    await mutateAsync(data);
   };
 
   return (

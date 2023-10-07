@@ -1,29 +1,32 @@
 import { Layout } from "@/components";
 import { ItemsPage } from "@/components/Templates/Items";
 import { getItems } from "@/firebase/http/items";
-import { GetServerSideProps } from "next";
+import { IItems } from "@/types/Items";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
-export type IItems = {
-  id: string;
-  name: string;
-  un: string;
-  price: number;
-};
+export default function Pecas() {
+  const {
+    data: itemsData,
+    isLoading,
+    isFetching,
+  } = useQuery({
+    queryKey: ["items"],
+    queryFn: () => getItems(),
+    onError: () => {
+      toast.error("Erro ao buscar peças. Tente novamente");
+    },
+  });
 
-export default function Pecas({ itemsData }: { itemsData: IItems[] }) {
   return (
     <Layout>
-      <ItemsPage itemsData={itemsData} />
+      {itemsData && (
+        <ItemsPage
+          itemsData={itemsData as IItems[]}
+          isLoading={isLoading || isFetching}
+        />
+      )}
     </Layout>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const itemsResponse = await getItems();
-
-  return {
-    props: {
-      itemsData: itemsResponse,
-    },
-  };
-};

@@ -1,26 +1,37 @@
-import { IItems } from "@/pages/pecas";
 import { Button, Heading } from "@/ui";
 
 import { openModal } from "@/utils/handleModal";
 import { CreateItemModal } from "./Create";
 
-import { useState } from "react";
-import { ItemsTable } from "./Table";
-import { EditItemModal } from "./Edit";
 import { deleteItem } from "@/firebase/http/items";
+import { IItems } from "@/types/Items";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { EditItemModal } from "./Edit";
+import { ItemsTable } from "./Table";
 
-export function ItemsPage({ itemsData }: { itemsData: IItems[] }) {
+type ItemsPageProps = {
+  itemsData: IItems[];
+  isLoading: boolean;
+};
+
+export function ItemsPage({ itemsData, isLoading }: ItemsPageProps) {
+  const queryClient = useQueryClient();
   const [currentItem, setCurrentItem] = useState<IItems | null>({} as IItems);
 
-  const handleDeleteItem = async (id: string) => {
-    try {
-      await deleteItem(id);
+  const { mutateAsync } = useMutation((id: string) => deleteItem(id), {
+    onSuccess: () => {
       toast.success("Peça deletada com sucesso.");
-    } catch (error) {
-      toast.error("Erro ao deletar peça. Tente novamente.");
-      console.error(error);
-    }
+      queryClient.invalidateQueries({ queryKey: ["items"] });
+    },
+    onError: () => {
+      toast.error("Erro ao excluir peça. Tente Novamente");
+    },
+  });
+
+  const handleDeleteItem = async (id: string) => {
+    await mutateAsync(id);
   };
 
   return (
@@ -38,11 +49,17 @@ export function ItemsPage({ itemsData }: { itemsData: IItems[] }) {
           Nova Peça
         </Button>
       </div>
-      <ItemsTable
-        itemsData={itemsData}
-        handleDelete={handleDeleteItem}
-        setCurrentItem={setCurrentItem}
-      />
+      {isLoading ? (
+        <div className="w-full flex justify-center h-40">
+          <span className="loading loading-spinner loading-lg text-primary"></span>
+        </div>
+      ) : (
+        <ItemsTable
+          itemsData={itemsData}
+          handleDelete={handleDeleteItem}
+          setCurrentItem={setCurrentItem}
+        />
+      )}
     </section>
   );
 }

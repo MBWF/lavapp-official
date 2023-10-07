@@ -1,20 +1,23 @@
 import { Modal } from "@/components/Modal";
-import { createItem, getItems } from "@/firebase/http/items";
+import { createItem } from "@/firebase/http/items";
 import { Button, CurrencyInput, Input } from "@/ui";
 import { closeModal } from "@/utils/handleModal";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { ItemsValidation, itemsSchema } from "./validations";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function CreateItemModal() {
+  const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
     control,
-    formState: { errors },
     reset,
     setValue,
+    formState: { errors },
   } = useForm<ItemsValidation>({
     resolver: zodResolver(itemsSchema),
   });
@@ -25,16 +28,21 @@ export function CreateItemModal() {
     closeModal("createItemModal");
   };
 
-  const submitNewItem: SubmitHandler<ItemsValidation> = async (data) => {
-    try {
-      await createItem(data);
-      await getItems();
+  const { mutateAsync } = useMutation({
+    mutationFn: (data: ItemsValidation) => createItem(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["items"]);
       onCloseModal();
       toast.success("Peça criada com sucesso.");
-    } catch (error) {
+    },
+    onError: (error: Error) => {
       toast.error("Erro ao criar peça. Tente novamente.");
       console.error(error);
-    }
+    },
+  });
+
+  const submitNewItem: SubmitHandler<ItemsValidation> = (data) => {
+    mutateAsync(data);
   };
 
   return (

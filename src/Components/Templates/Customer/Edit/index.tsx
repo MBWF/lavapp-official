@@ -6,6 +6,7 @@ import { DefaultSelectInput } from "@/ui/Form/Select/DefaultSelect";
 import { ErrorMessage } from "@/ui/Typography/ErrorMessage";
 import { convertDateToInput } from "@/utils/convertDate";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -23,6 +24,7 @@ type EditCustomerPageProps = {
 
 export default function EditCustomer({ customerData }: EditCustomerPageProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -49,8 +51,8 @@ export default function EditCustomer({ customerData }: EditCustomerPageProps) {
     resolver: zodResolver(customerSchema),
   });
 
-  const handleEditCustomer: SubmitHandler<CustomerSchemaType> = (data) => {
-    try {
+  const { mutateAsync } = useMutation({
+    mutationFn: (data: CustomerSchemaType) =>
       editCustomer(
         {
           name: data.name,
@@ -70,12 +72,20 @@ export default function EditCustomer({ customerData }: EditCustomerPageProps) {
           },
         } as ICustomers,
         String(router.query.id)
-      );
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["customers"]);
       toast.success("Cliente editado com sucesso.");
       router.push("/clientes");
-    } catch (error) {
+    },
+    onError: (error: Error) => {
       toast.error("Erro ao editar cliente. Tente mais tarde.");
-    }
+      console.error(error);
+    },
+  });
+
+  const handleEditCustomer: SubmitHandler<CustomerSchemaType> = (data) => {
+    mutateAsync(data);
   };
 
   return (

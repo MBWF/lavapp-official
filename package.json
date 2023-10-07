@@ -17,6 +17,7 @@
     "@fullcalendar/resource-timeline": "^6.1.8",
     "@fullcalendar/timegrid": "^6.1.8",
     "@hookform/resolvers": "^3.3.1",
+    "@tanstack/react-query": "^4.35.7",
     "@tanstack/react-table": "^8.9.3",
     "@types/node": "20.4.5",
     "@types/react": "18.2.17",
@@ -54,6 +55,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^4.36.0",
     "daisyui": "^3.5.0"
   }
 }
