@@ -21,6 +21,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 type OrdersPageProps = {
   customerData: ICustomers[];
   itemsData: IItems[];
+  isLoading: boolean;
 };
 
 export type SelectedItemsProps = {
@@ -32,6 +33,7 @@ export type SelectedItemsProps = {
 export function CreateNewOrderTemplate({
   customerData,
   itemsData,
+  isLoading,
 }: OrdersPageProps) {
   const queryClient = useQueryClient();
 
@@ -157,7 +159,7 @@ export function CreateNewOrderTemplate({
           </li>
         </ul>
         <div className="m-auto w-full px-12">
-          {currentStep === 1 && (
+          {currentStep === 1 && !isLoading && (
             <FirstStep
               control={control}
               register={register}

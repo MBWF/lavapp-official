@@ -4,35 +4,40 @@ import { getCustomers } from "@/firebase/http/customers";
 import { getItems } from "@/firebase/http/items";
 import { ICustomers } from "@/types/Customers";
 import { IItems } from "@/types/Items";
-import { GetServerSideProps } from "next";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
-type OrdersPageProps = {
-  customerData: ICustomers[];
-  itemsData: IItems[];
-};
+export default function CreateOrder() {
+  const { data: customersData, isLoading: isLoadingCustomers } = useQuery({
+    queryKey: ["customers"],
+    queryFn: () => getCustomers(),
+    onError: () => {
+      toast.error(
+        "Erro ao buscar clientes. Atualize a página e tente novamente"
+      );
+    },
+    refetchOnWindowFocus: false,
+  });
 
-export default function CreateOrder({
-  customerData,
-  itemsData,
-}: OrdersPageProps) {
+  const { data: itemsData, isLoading: isLoadingItems } = useQuery({
+    queryKey: ["items"],
+    queryFn: () => getItems(),
+    onError: () => {
+      toast.error("Erro ao buscar peças. Tente novamente");
+    },
+    refetchOnWindowFocus: false,
+  });
+
   return (
     <Layout>
-      <CreateNewOrderTemplate
-        customerData={customerData}
-        itemsData={itemsData}
-      />
+      {customersData && itemsData && (
+        <CreateNewOrderTemplate
+          customerData={customersData as ICustomers[]}
+          itemsData={itemsData as IItems[]}
+          isLoading={isLoadingCustomers || isLoadingItems}
+        />
+      )}
     </Layout>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const itemsResponse = await getItems();
-  const customerResponse = await getCustomers();
-
-  return {
-    props: {
-      customerData: customerResponse,
-      itemsData: itemsResponse,
-    },
-  };
-};
