@@ -1,4 +1,5 @@
 import { db } from "@/firebase/firebase";
+import { IItems } from "@/types/Items";
 import {
   addDoc,
   collection,
@@ -19,7 +20,7 @@ const itemsCollectionRef = collection(db, "items");
 export const getItems = async () => {
   const data = await getDocs(itemsCollectionRef);
 
-  return data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  return data.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as IItems[];
 };
 
 export const createItem = async (data: IItem) => {

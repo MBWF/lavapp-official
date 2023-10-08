@@ -15,7 +15,10 @@ const customersCollectionRef = collection(db, "customers");
 export const getCustomers = async () => {
   const data = await getDocs(customersCollectionRef);
 
-  return data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  return data.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+  })) as ICustomers[];
 };
 
 export const getCustomersById = async (customerId: string) => {
