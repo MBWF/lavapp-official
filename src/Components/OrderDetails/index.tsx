@@ -1,11 +1,10 @@
-import { Modal } from "@/components/Modal";
 import { Button, Text } from "@/ui";
 
 import { IOrders } from "@/types/Orders";
 import { convertDateToShow } from "@/utils/convertDate";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { closeModal } from "@/utils/handleModal";
-import { OrderStatusHandler } from "..";
+import { Modal, OrderStatusHandler } from "..";
 import {
   handleNextOrderStatus,
   handlePreviousOrderStatus,
