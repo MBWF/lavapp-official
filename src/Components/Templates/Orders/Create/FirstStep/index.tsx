@@ -85,7 +85,6 @@ export function FirstStep({
                   placeholder="Insira o número do what's app"
                   onChange={onChange}
                   value={value}
-                  hasError={!!error?.message}
                   mask="99 99999-9999"
                   maskChar=""
                 />
