@@ -1,12 +1,12 @@
 import { deleteOrder } from "@/firebase/http/Orders";
 import { IOrders } from "@/types/Orders";
 import { Button, Heading } from "@/ui";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { OrderDetailsModal } from "../../OrderDetails";
 import { OrdersTable } from "./Table";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export type OrdersPageProps = {
   ordersData: IOrders[];

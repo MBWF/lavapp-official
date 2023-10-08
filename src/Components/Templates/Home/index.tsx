@@ -1,5 +1,3 @@
-import { OrderDetailsModal } from "@/components/OrderDetails";
-import { OrderCard } from "@/components/OrderTable";
 import { IOrders } from "@/types/Orders";
 import { Heading, Text } from "@/ui";
 import { useState } from "react";
@@ -15,6 +13,8 @@ import {
   ArcElement,
 } from "chart.js";
 import { Bar, Pie } from "react-chartjs-2";
+import { OrderDetailsModal } from "@/components/OrderDetails";
+import { OrderCard } from "@/components/OrderTable";
 
 ChartJS.register(
   CategoryScale,
