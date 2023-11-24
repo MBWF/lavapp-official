@@ -58,6 +58,7 @@ export function AuthProvider({ children }: AuthContextProps) {
   }, [router]);
 
   useEffect(() => {
+    if (router.pathname === "/consulta") return;
     const listen = onAuthStateChanged(auth, (user) => {
       if (!user) {
         logout();

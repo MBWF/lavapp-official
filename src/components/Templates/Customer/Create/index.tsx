@@ -4,12 +4,8 @@ import { DefaultSelectInput } from "@/ui/Form/Select/DefaultSelect";
 import { ErrorMessage } from "@/ui/Typography/ErrorMessage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { CustomerSchemaType, customerSchema } from "./validations";
-import { createCustomer } from "@/firebase/http/customers";
-import { ICustomers } from "@/types/Customers";
-import { toast } from "react-toastify";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type CreateCustomerProps = {
   handleSubmitForm: (data: CustomerSchemaType) => void;

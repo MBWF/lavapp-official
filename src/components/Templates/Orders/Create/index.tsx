@@ -2,10 +2,12 @@ import { useCreateOrder } from "@/contexts/Order/useCreateOrder";
 import { createOrder } from "@/firebase/http/Orders";
 
 import { ICustomers } from "@/types/Customers";
+import { IItems } from "@/types/Items";
 import { Button, Heading } from "@/ui";
 import { REQUIRED_ERROR } from "@/utils/ErrorsMessages";
 import { convertDateToInput } from "@/utils/convertDate";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -15,8 +17,6 @@ import { FirstStep } from "./FirstStep";
 import { SecondStep } from "./SecondStep";
 import { ThirdStep } from "./ThirdStep";
 import { OrderSchemaType, orderSchema } from "./validations";
-import { IItems } from "@/types/Items";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type OrdersPageProps = {
   customerData: ICustomers[];
@@ -66,7 +66,12 @@ export function CreateNewOrderTemplate({
                 name: String(data.customer?.label),
               }
             : null,
-          phone_number: data.isNewCustomer ? String(data.phone_number) : null,
+          phone_number: data.isNewCustomer
+            ? String(data.phone_number)
+            : String(
+                customerData.find((e) => data.customer?.value === e.id)
+                  ?.phone_number
+              ),
           name: data.isNewCustomer ? String(data.name) : null,
           address: !data.isDelivery
             ? null
@@ -97,6 +102,7 @@ export function CreateNewOrderTemplate({
         queryClient.invalidateQueries(["orders"]);
         toast.success("Pedido criado com sucesso.");
         router.push("/pedidos");
+        window.parent.location.reload();
       },
       onError: (error: Error) => {
         toast.error("Erro ao criar novo pedido. Tente novamente.");

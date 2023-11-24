@@ -2,19 +2,19 @@ import { IOrders } from "@/types/Orders";
 import { Heading, Text } from "@/ui";
 import { useState } from "react";
 
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-} from "chart.js";
-import { Bar, Pie } from "react-chartjs-2";
 import { OrderDetailsModal } from "@/components/OrderDetails";
 import { OrderCard } from "@/components/OrderTable";
+import {
+  ArcElement,
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  Title,
+  Tooltip,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -91,9 +91,8 @@ export function HomePage({ todayOrders }: { todayOrders: IOrders[] }) {
       {selectedOrder && <OrderDetailsModal defaultValues={selectedOrder} />}
       <Heading>Home</Heading>
 
-      <div className="flex gap-16 h-80">
+      <div className="h-80 w-full">
         <Bar options={options} data={data} />
-        <Pie data={Piedata} />
       </div>
       <div className="flex flex-col justify-between">
         <aside className="flex flex-col my-8 w-full">

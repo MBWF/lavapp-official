@@ -35,8 +35,12 @@ function handlePreviousStatus(currentStatusId: number) {
 
 export const getOrders = async () => {
   const data = await getDocs(OrdersCollectionRef);
+  const filredData = data.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+  })) as IOrders[];
 
-  return data.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as IOrders[];
+  return filredData.sort((a, b) => b.order_number - a.order_number);
 };
 
 export const getTodayOrders = async (
@@ -75,6 +79,21 @@ export const getTodayOrders = async (
   }
 
   return () => unsubscribe();
+};
+
+export const getOrdersByPhoneNumber = async (customerNumber: string) => {
+  const queryByPhoneNumber = query(
+    OrdersCollectionRef,
+    where("phone_number", "==", customerNumber)
+  );
+
+  const querySnapshot = await getDocs(queryByPhoneNumber);
+  const orders = querySnapshot.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+  })) as IOrders[];
+
+  return orders.sort((a, b) => b.order_number - a.order_number);
 };
 
 export const createOrder = async (data: IOrders, lastOrderNumber: number) => {
