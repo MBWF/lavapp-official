@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { Controller, useForm } from "react-hook-form";
 import { CustomerSchemaType, customerSchema } from "./validations";
 
+
 type CreateCustomerProps = {
   handleSubmitForm: (data: CustomerSchemaType) => void;
 };
