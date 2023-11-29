@@ -99,7 +99,7 @@ export const getOrdersByPhoneNumber = async (customerNumber: string) => {
 export const createOrder = async (data: IOrders, lastOrderNumber: number) => {
   await addDoc(OrdersCollectionRef, {
     ...data,
-    order_number: lastOrderNumber + 1,
+    order_number: (lastOrderNumber ?? 0) + 1,
   });
 };
 

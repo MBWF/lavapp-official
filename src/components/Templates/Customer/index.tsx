@@ -15,6 +15,7 @@ export function CustomerPage({ customersData, isLoading }: CustomerPageProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
+
   const { mutateAsync } = useMutation((id: string) => deleteCustomer(id), {
     onSuccess: () => {
       toast.success("Cliente deletado com sucesso.");

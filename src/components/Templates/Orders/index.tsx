@@ -18,6 +18,8 @@ export function OrdersTemplate({ ordersData, isLoading }: OrdersPageProps) {
   const [currentItem, setCurrentItem] = useState<IOrders>({} as IOrders);
   const router = useRouter();
 
+    console.log(ordersData);
+
   const { mutateAsync } = useMutation((id: string) => deleteOrder(id), {
     onSuccess: () => {
       toast.success("Pedido excluido com sucesso.");

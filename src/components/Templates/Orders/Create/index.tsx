@@ -102,7 +102,6 @@ export function CreateNewOrderTemplate({
         queryClient.invalidateQueries(["orders"]);
         toast.success("Pedido criado com sucesso.");
         router.push("/pedidos");
-        window.parent.location.reload();
       },
       onError: (error: Error) => {
         toast.error("Erro ao criar novo pedido. Tente novamente.");
