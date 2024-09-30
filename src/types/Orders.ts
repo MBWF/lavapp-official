@@ -1,5 +1,12 @@
 import { ReactNode } from "react";
 
+export type OrderStatus =
+  | "SORTING"
+  | "WASHING"
+  | "IRONING"
+  | "FINISHED"
+  | "DELIVERED";
+
 export type IOrders = {
   id?: string;
   order_number: number;
@@ -22,7 +29,7 @@ export type IOrders = {
   description: string;
   status: {
     id: number;
-    name: "SORTING" | "WASHING" | "IRONING" | "FINISHED" | "DELIVERED";
+    name: OrderStatus;
   };
   address?: {
     zip_code: string;
@@ -32,6 +39,14 @@ export type IOrders = {
     complement?: string;
   } | null;
 };
+
+export const statusSteps: { status: OrderStatus; label: string }[] = [
+  { status: "SORTING", label: "Separando" },
+  { status: "WASHING", label: "Lavando" },
+  { status: "IRONING", label: "Passando" },
+  { status: "FINISHED", label: "Finalizado" },
+  { status: "DELIVERED", label: "Entregue" },
+];
 
 export type IOrderStatus = {
   SCREENING: { icon: ReactNode; label: string };

@@ -8,7 +8,7 @@ export const itemsSchema = z.object({
       required_error: REQUIRED_ERROR,
       invalid_type_error: "Insira o valor.",
     })
-    .nonempty(NON_EMPTY)
+    .nonempty(REQUIRED_ERROR)
     .transform((val) =>
       Number(val.replace(/R\$ |\.|,/g, (match) => (match === "," ? "." : "")))
     ),

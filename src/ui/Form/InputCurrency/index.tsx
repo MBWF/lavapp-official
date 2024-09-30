@@ -1,3 +1,5 @@
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import { ComponentProps } from "react";
 import {
   Control,
@@ -14,7 +16,7 @@ const input = tv({
   variants: {
     color: {
       default: "input-bordered",
-      error: "input-error border-gray-300",
+      error: "text-destructive ",
     },
   },
   defaultVariants: {
@@ -43,15 +45,17 @@ export const CurrencyInput = ({
   return (
     <>
       <div className="form-control w-full max-w-xs">
-        <label className="label" htmlFor={label}>
+        <Label className="label" htmlFor={label}>
           <span className="label-text">{label}</span>
-        </label>
+        </Label>
         <Controller
           name={name}
           control={control}
           render={({ field: { ref, ...rest } }) => (
             <NumericFormat
-              className={input({ color: error ? "error" : "default" })}
+              className={cn(
+                "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              )}
               thousandSeparator="."
               decimalSeparator=","
               prefix="R$ "
@@ -65,9 +69,7 @@ export const CurrencyInput = ({
           )}
         />
         {!!error && (
-          <label className="label">
-            <span className="label-text-alt text-error">{error.message}</span>
-          </label>
+          <span className="text-xs text-destructive">{error.message}</span>
         )}
       </div>
     </>

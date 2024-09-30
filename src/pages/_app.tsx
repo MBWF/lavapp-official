@@ -17,7 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <AuthProvider>
         <CreateOrderProvider>
           <Component {...pageProps} />
-          <ToastContainer theme="colored" />
+          <ToastContainer theme="dark" />
         </CreateOrderProvider>
       </AuthProvider>
     </QueryClientProvider>

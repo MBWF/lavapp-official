@@ -1,5 +1,7 @@
+import { Button } from "@/components/ui/button";
+import { DeleteAlert } from "@/components/ui/components/alerts/delele";
 import { ICustomers } from "@/types/Customers";
-import { Button, Text } from "@/ui";
+import { Text } from "@/ui";
 import { Table } from "@/ui/Table";
 import { createColumnHelper } from "@tanstack/react-table";
 
@@ -37,19 +39,18 @@ export function CustomerTable({
       cell: (info) => (
         <div className="flex gap-4">
           <Button
-            variant="iconButton"
+            variant="outline"
             onClick={() =>
               router.push(`/clientes/editar/${info.row.original.id}`)
             }
           >
             <Edit2 className="text-blue-500" size={16} />
           </Button>
-          <Button
-            variant="iconButton"
-            onClick={() => handleDelete(info.row.original.id)}
-          >
-            <Trash2 color="red" size={16} />
-          </Button>
+          <DeleteAlert
+            title="Excluir cliente"
+            description="Você deseja realmente excluir essa cliente? Essa ação é irreversível e necessitará adiciona-lo novamente manualmente."
+            onConfirm={() => handleDelete(info.row.original.id)}
+          />
         </div>
       ),
       header: "Ações",

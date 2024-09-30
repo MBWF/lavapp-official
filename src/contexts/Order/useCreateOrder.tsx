@@ -13,6 +13,7 @@ type CreateOrderContextType = {
   lastOrderNumber: number;
   handleNextStep: () => void;
   handlePreviousStep: () => void;
+  handleResetSteps: () => void;
 };
 
 type AuthContextProps = {
@@ -35,6 +36,10 @@ export function CreateOrderProvider({ children }: AuthContextProps) {
   const handlePreviousStep = () => {
     if (currentStep === 1) return;
     setCurrentStep((state) => state - 1);
+  };
+
+  const handleResetSteps = () => {
+    setCurrentStep(1);
   };
 
   useEffect(() => {
@@ -63,6 +68,7 @@ export function CreateOrderProvider({ children }: AuthContextProps) {
         handleNextStep,
         handlePreviousStep,
         lastOrderNumber,
+        handleResetSteps,
       }}
     >
       {children}

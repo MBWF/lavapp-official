@@ -1,11 +1,11 @@
+import OrderModal from "@/components/OrderDetails/orderDetails";
+import { Button } from "@/components/ui/button";
 import { deleteOrder } from "@/firebase/http/Orders";
 import { IOrders } from "@/types/Orders";
-import { Button, Heading } from "@/ui";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { OrderDetailsModal } from "../../OrderDetails";
 import { OrdersTable } from "./Table";
 
 export type OrdersPageProps = {
@@ -15,11 +15,13 @@ export type OrdersPageProps = {
 
 export function OrdersTemplate({ ordersData, isLoading }: OrdersPageProps) {
   const queryClient = useQueryClient();
-  const [currentItem, setCurrentItem] = useState<IOrders>({} as IOrders);
+  const [currentItem, setCurrentItem] = useState<IOrders | null>(null);
   const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    console.log(ordersData);
-
+  const handleCloseModal = () => {
+    setIsModalOpen((state) => !state);
+  };
   const { mutateAsync } = useMutation((id: string) => deleteOrder(id), {
     onSuccess: () => {
       toast.success("Pedido excluido com sucesso.");
@@ -37,9 +39,15 @@ export function OrdersTemplate({ ordersData, isLoading }: OrdersPageProps) {
 
   return (
     <section className="shadow-lg p-8">
-      {currentItem && <OrderDetailsModal defaultValues={currentItem} />}
+      {currentItem && (
+        <OrderModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          order={currentItem}
+        />
+      )}
       <div className="flex justify-between items-center mb-8">
-        <Heading>Pedidos</Heading>
+        <h1 className="text-2xl">Pedidos</h1>
         <Button onClick={() => router.push("/pedidos/criar")}>
           Novo Pedido
         </Button>
@@ -53,6 +61,7 @@ export function OrdersTemplate({ ordersData, isLoading }: OrdersPageProps) {
           ordersData={ordersData}
           setCurrentItem={setCurrentItem}
           handleDelete={handleDeleteOrder}
+          handleCloseModal={handleCloseModal}
         />
       )}
     </section>

@@ -1,8 +1,8 @@
 import { forwardRef } from "react";
 import Select from "react-select";
 
+import { Label } from "@/components/ui/label";
 import { selectStyles } from "../selectStyles";
-import { ErrorMessage } from "@/ui/Typography/ErrorMessage";
 
 type SelectInputProps = {
   defaultOptions:
@@ -23,23 +23,20 @@ type SelectInputProps = {
   onChange?: (newValue: any) => void;
 };
 
-const DefaultSelectStyled = (
-  {
-    defaultOptions,
-    isMulti = false,
-    placeholder,
-    label,
-    hasError,
-    isDisabled,
-    defaultValue,
-    onChange,
-    ...rest
-  }: SelectInputProps,
-  ref: React.ForwardedRef<HTMLElement>
-) => {
+const DefaultSelectStyled = ({
+  defaultOptions,
+  isMulti = false,
+  placeholder,
+  label,
+  hasError,
+  isDisabled,
+  defaultValue,
+  onChange,
+  ...rest
+}: SelectInputProps) => {
   return (
-    <div className="flex flex-col">
-      <label htmlFor="select">{label}</label>
+    <div className="flex flex-col gap-1">
+      <Label htmlFor="select">{label}</Label>
       <Select
         data-testid="selectInput"
         aria-label={label}
@@ -54,7 +51,9 @@ const DefaultSelectStyled = (
         className="p-0 min-w-fit"
         {...rest}
       />
-      {!!hasError && <ErrorMessage>{hasError}</ErrorMessage>}
+      {!!hasError && (
+        <span className="text-xs text-destructive">{hasError}</span>
+      )}
     </div>
   );
 };

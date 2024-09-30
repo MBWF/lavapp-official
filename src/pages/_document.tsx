@@ -20,7 +20,7 @@ export default function Document() {
           rel="stylesheet"
         />
       </Head>
-      <body data-theme="light">
+      <body data-theme="dark">
         <Main />
         <NextScript />
       </body>

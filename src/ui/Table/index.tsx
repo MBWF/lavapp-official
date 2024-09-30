@@ -35,7 +35,7 @@ export function Table({ tableData, columns }: TableProps) {
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id} className="capitalize px-3.5 py-2">
+                <th key={header.id} className="text-md px-3.5 py-2">
                   {flexRender(
                     header.column.columnDef.header,
                     header.getContext()
@@ -47,8 +47,8 @@ export function Table({ tableData, columns }: TableProps) {
         </thead>
         <tbody>
           {table.getRowModel().rows.length ? (
-            table.getRowModel().rows.map((row, i) => (
-              <tr key={row.id} className="text-black text-lg ">
+            table.getRowModel().rows.map((row) => (
+              <tr key={row.id} className="text-slate-700 text-md font-sans ">
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}

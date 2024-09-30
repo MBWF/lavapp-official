@@ -21,7 +21,7 @@ export const orderSchema = z
       .optional(),
     name: z.string().optional(),
     description: z.string().optional(),
-    isNewCustomer: z.boolean(),
+    isNewCustomer: z.coerce.boolean(),
     isDelivery: z.boolean().optional(),
     phone_number: z
       .string({

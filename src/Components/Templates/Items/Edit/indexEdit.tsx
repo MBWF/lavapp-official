@@ -7,17 +7,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { createItem } from "@/firebase/http/items";
-import { UNIT_LiST } from "@/types/Items";
+import { editItem } from "@/firebase/http/items";
+import { IItems, UNIT_LiST } from "@/types/Items";
 import { CurrencyInput, DefaultSelectInput } from "@/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { ItemsValidation, itemsSchema } from "./validations";
+import { Edit2, Trash2 } from "lucide-react";
 
-export function CreateItemModal() {
+type EditItemModalProps = {
+  defaultValues: IItems | null;
+};
+
+export function EditItemModal({ defaultValues }: EditItemModalProps) {
   const [openModal, setOpenModal] = useState(false);
   const queryClient = useQueryClient();
 
@@ -25,30 +30,48 @@ export function CreateItemModal() {
     register,
     handleSubmit,
     control,
-    reset,
     formState: { errors },
+    setValue,
   } = useForm<ItemsValidation>({
+    defaultValues: {
+      ...defaultValues,
+      price: String(defaultValues?.price),
+      un: defaultValues?.un === "pair" ? UNIT_LiST[1] : UNIT_LiST[0] ?? {},
+    },
     resolver: zodResolver(itemsSchema),
   });
 
+  useEffect(() => {
+    setValue("name", String(defaultValues?.name));
+    setValue("price", String(defaultValues?.price));
+    setValue(
+      "un",
+      defaultValues?.un === "pair" ? UNIT_LiST[1] : UNIT_LiST[0] ?? {}
+    );
+  }, [defaultValues, setValue]);
+
   const onCloseModal = () => {
-    reset();
     setOpenModal(false);
   };
 
-  const { mutate, isLoading } = useMutation({
-    mutationFn: (data: ItemsValidation) =>
-      createItem({ ...data, un: data.un.value }),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["items"]);
-      onCloseModal();
-      toast.success("Peça criada com sucesso.");
-    },
-    onError: (error: Error) => {
-      toast.error("Erro ao criar peça. Tente novamente.");
-      console.error(error);
-    },
-  });
+  const { mutate, isLoading } = useMutation(
+    (data: ItemsValidation) =>
+      editItem(
+        { ...data, price: Number(data.price), un: data.un.value },
+        String(defaultValues?.id)
+      ),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["items"]);
+        onCloseModal();
+        toast.success("Peça editada com sucesso.");
+      },
+      onError: (error: Error) => {
+        toast.error("Erro ao editar peça. Tente novamente.");
+        console.error(error);
+      },
+    }
+  );
 
   const submitNewItem: SubmitHandler<ItemsValidation> = (data) => {
     mutate(data);
@@ -60,7 +83,9 @@ export function CreateItemModal() {
       onOpenChange={() => setOpenModal((state) => !state)}
     >
       <DialogTrigger>
-        <Button>Nova peça</Button>
+        <Button variant="outline">
+          <Edit2 size={16} className="text-primary" />
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -107,7 +132,7 @@ export function CreateItemModal() {
               </Button>
 
               <Button type="submit" disabled={isLoading}>
-                Adicionar
+                Editar
               </Button>
             </div>
           </form>

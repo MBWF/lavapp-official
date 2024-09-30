@@ -1,5 +1,5 @@
 import { IItems } from "@/types/Items";
-import { Button, DefaultSelectInput, Input, Text } from "@/ui";
+import { DefaultSelectInput } from "@/ui";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import {
@@ -10,6 +10,16 @@ import {
   useState,
 } from "react";
 import { SelectedItemsProps } from "..";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  Table,
+} from "@/components/ui/table";
 
 export type SecondStepProps = {
   itemsData: IItems[];
@@ -132,6 +142,7 @@ export function SecondStep({
 
         <div>
           <Input
+            id="quantity"
             label="Quantidade"
             type="number"
             min={0}
@@ -140,7 +151,6 @@ export function SecondStep({
           />
         </div>
         <Button
-          className="btn-accent"
           disabled={!currentSelectedItem || currentQuantity === 0}
           onClick={() => handleAddItem()}
         >
@@ -148,52 +158,61 @@ export function SecondStep({
         </Button>
       </div>
       <div className="flex justify-between">
-        <Text>
-          <Text className="mr-4">Total de peças:</Text>
+        <p>
+          <p className="mr-4">Total de peças:</p>
           <b>
             {selectedItems.reduce(
               (acc, elem) => (acc += Number(elem.quantity)),
               0
             )}
           </b>
-        </Text>
-        <Text>
-          <Text className="mr-4">Valor total:</Text>
+        </p>
+        <p>
+          <p className="mr-4">Valor total:</p>
           <b>{formatCurrency(totalPrice)}</b>
-        </Text>
+        </p>
       </div>
-      {selectedItems.map((item: SelectedItemsProps) => (
-        <div key={item.id} className="flex flex-col w-full">
-          <div className="my-2 w-full flex justify-between items-center">
-            <Text className="flex">{item.name}</Text>
-            <div className="flex gap-8">
-              <div className="flex items-center gap-8 shadow-md">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Nome</TableHead>
+            <TableHead>Quantidade</TableHead>
+            <TableHead>Excluir</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {selectedItems.map((item: SelectedItemsProps) => (
+            <TableRow key={item.id}>
+              <TableCell>{item.name}</TableCell>
+              <TableCell>
+                <div className="flex items-center gap-8 shadow-md w-fit">
+                  <Button
+                    variant="outline"
+                    onClick={() => handleLessItem(item.id)}
+                  >
+                    <Minus />
+                  </Button>
+                  <p>{item.quantity}</p>
+                  <Button
+                    variant="outline"
+                    onClick={() => handleMoreItem(item.id)}
+                  >
+                    <Plus />
+                  </Button>
+                </div>
+              </TableCell>
+              <TableCell>
                 <Button
-                  variant="iconButton"
-                  onClick={() => handleLessItem(item.id)}
+                  variant="outline"
+                  onClick={() => handleDeleteItem(item.id)}
                 >
-                  <Minus />
+                  <Trash2 size={16} className="text-destructive" />
                 </Button>
-                <Text>{item.quantity}</Text>
-                <Button
-                  variant="iconButton"
-                  onClick={() => handleMoreItem(item.id)}
-                >
-                  <Plus />
-                </Button>
-              </div>
-              <Button
-                variant="iconButton"
-                className="bg-red-500 mr-4"
-                onClick={() => handleDeleteItem(item.id)}
-              >
-                <Trash2 />
-              </Button>
-            </div>
-          </div>
-          <div className="divider m-0" />
-        </div>
-      ))}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }

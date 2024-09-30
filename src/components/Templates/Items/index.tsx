@@ -1,14 +1,10 @@
-import { Button, Heading } from "@/ui";
-
-import { openModal } from "@/utils/handleModal";
-import { CreateItemModal } from "./Create";
+import { Heading } from "@/ui";
 
 import { deleteItem } from "@/firebase/http/items";
 import { IItems } from "@/types/Items";
-import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { EditItemModal } from "./Edit";
+import { CreateItemModal } from "./Create";
 import { ItemsTable } from "./Table";
 
 type ItemsPageProps = {
@@ -18,9 +14,8 @@ type ItemsPageProps = {
 
 export function ItemsPage({ itemsData, isLoading }: ItemsPageProps) {
   const queryClient = useQueryClient();
-  const [currentItem, setCurrentItem] = useState<IItems | null>({} as IItems);
 
-  const { mutateAsync } = useMutation((id: string) => deleteItem(id), {
+  const { mutate } = useMutation((id: string) => deleteItem(id), {
     onSuccess: () => {
       toast.success("Peça deletada com sucesso.");
       queryClient.invalidateQueries({ queryKey: ["items"] });
@@ -30,36 +25,22 @@ export function ItemsPage({ itemsData, isLoading }: ItemsPageProps) {
     },
   });
 
-  const handleDeleteItem = async (id: string) => {
-    await mutateAsync(id);
+  const handleDeleteItem = (id: string) => {
+    mutate(id);
   };
 
   return (
     <section className="shadow-lg p-8">
-      <CreateItemModal />
-      {currentItem && <EditItemModal defaultValues={currentItem} />}
       <div className="flex justify-between items-center mb-8">
         <Heading>Peças</Heading>
-        <Button
-          data-testid="createItemButton"
-          onClick={() => {
-            setCurrentItem(null);
-            openModal("createItemModal");
-          }}
-        >
-          Nova Peça
-        </Button>
+        <CreateItemModal />
       </div>
       {isLoading ? (
         <div className="w-full flex justify-center h-40">
           <span className="loading loading-spinner loading-lg text-primary"></span>
         </div>
       ) : (
-        <ItemsTable
-          itemsData={itemsData}
-          handleDelete={handleDeleteItem}
-          setCurrentItem={setCurrentItem}
-        />
+        <ItemsTable itemsData={itemsData} handleDelete={handleDeleteItem} />
       )}
     </section>
   );

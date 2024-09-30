@@ -1,18 +1,20 @@
 import { Layout } from "@/components";
-import { HomePage } from "@/components/Templates/Home";
+import { Dashboard } from "@/components/Templates/Home/newHome";
 import { getTodayOrders } from "@/firebase/http/Orders";
 import { IOrders } from "@/types/Orders";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 export default function Home() {
   const [todayOrders, setTodayOrders] = useState<IOrders[]>([]);
 
-  useEffect(() => {
-    getTodayOrders(setTodayOrders);
-  }, []);
+  useQuery({
+    queryKey: ["orders"],
+    queryFn: () => getTodayOrders(setTodayOrders),
+    refetchOnWindowFocus: false,
+  });
 
   return (
-    <Layout>{todayOrders && <HomePage todayOrders={todayOrders} />}</Layout>
+    <Layout>{todayOrders && <Dashboard todayOrders={todayOrders} />}</Layout>
   );
 }
-

@@ -1,16 +1,19 @@
 import { Layout } from "@/components";
 import Calendar from "@/components/FullCalendar";
-import { OrderDetailsModal } from "@/components/OrderDetails";
+import OrderModal from "@/components/OrderDetails/orderDetails";
 import { getOrders } from "@/firebase/http/Orders";
 import { IOrders } from "@/types/Orders";
-import { openModal } from "@/utils/handleModal";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
 export default function Agenda() {
   const [selectedOrder, setSelectedOrder] = useState<IOrders>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const handleCloseModal = () => {
+    setIsModalOpen((state) => !state);
+  };
   const { data: ordersData } = useQuery({
     queryKey: ["orders"],
     queryFn: () => getOrders(),
@@ -25,12 +28,16 @@ export default function Agenda() {
 
     setSelectedOrder(currentOrder);
 
-    openModal("orderDetailsModal");
+    handleCloseModal();
   };
   return (
     <Layout>
       {selectedOrder && (
-        <OrderDetailsModal defaultValues={selectedOrder as IOrders} />
+        <OrderModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          order={selectedOrder}
+        />
       )}
       {ordersData && (
         <Calendar

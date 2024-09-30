@@ -1,22 +1,22 @@
-import {
-  Control,
-  Controller,
-  FieldErrors,
-  UseFormRegister,
-} from "react-hook-form";
-import { OrderSchemaType } from "../validations";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+
 import CustomDatePicker from "@/ui/Form/DatePicker";
-import { Input, Text } from "@/ui";
-import { useState } from "react";
+import { Controller, useFormContext } from "react-hook-form";
+import { OrderSchemaType } from "../validations";
+import { Input } from "@/components/ui/input";
 
-export type ThirdStepProps = {
-  control: Control<OrderSchemaType>;
-  register: UseFormRegister<OrderSchemaType>;
-  errors: FieldErrors<OrderSchemaType>;
-};
+export function ThirdStep() {
+  const {
+    control,
+    formState: { errors },
+    register,
+    watch,
+    setValue,
+  } = useFormContext<OrderSchemaType>();
 
-export function ThirdStep({ control, errors, register }: ThirdStepProps) {
-  const [isDelivery, setIsDelivery] = useState<boolean>(false);
+  const isDelivery = watch("isDelivery");
+
   return (
     <section>
       <div className="flex flex-col gap-4 ml-6">
@@ -52,56 +52,55 @@ export function ThirdStep({ control, errors, register }: ThirdStepProps) {
           />
         </div>
 
-        <div className="form-control w-fit">
-          <label className="label cursor-pointer">
-            <input
-              type="checkbox"
-              className="checkbox checkbox-primary mr-2"
-              checked={isDelivery}
-              {...register("isDelivery", {
-                onChange: () => {
-                  setIsDelivery((state) => !state);
-                },
-              })}
-            />
-            <Text className="label-text text-lg">Para Entrega</Text>
-          </label>
+        <div className="flex gap-2 items-center">
+          <Checkbox
+            id="isDelivery"
+            onCheckedChange={(value) => setValue("isDelivery", !!value)}
+          />
+          <Label htmlFor="isDelivery" className="text-md cursor-pointer">
+            Para Entrega
+          </Label>
         </div>
 
         {isDelivery && (
           <div className="flex flex-wrap gap-8">
             <div className="w-1/4">
               <Input
+                id="cep"
                 label="CEP"
-                hasError={errors.cep?.message}
+                errorMessage={errors.cep?.message}
                 {...register("cep")}
               />
             </div>
             <div className="w-1/4">
               <Input
+                id="street"
                 label="Rua"
-                hasError={errors.street?.message}
+                errorMessage={errors.street?.message}
                 {...register("street")}
               />
             </div>
             <div className="w-1/4">
               <Input
+                id="district"
                 label="Bairro"
-                hasError={errors.district?.message}
+                errorMessage={errors.district?.message}
                 {...register("district")}
               />
             </div>
             <div className="w-1/4">
               <Input
+                id="place_number"
                 label="Número"
-                hasError={errors.place_number?.message}
+                errorMessage={errors.place_number?.message}
                 {...register("place_number")}
               />
             </div>
             <div className="w-1/4">
               <Input
+                id="complement"
                 label="Complemento"
-                hasError={errors.complement?.message}
+                errorMessage={errors.complement?.message}
                 {...register("complement")}
               />
             </div>
