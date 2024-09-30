@@ -1,10 +1,11 @@
 import { ICustomers } from "@/types/Customers";
-import { Button, Heading } from "@/ui";
+
 import { useRouter } from "next/router";
 import { CustomerTable } from "./Table";
 import { deleteCustomer } from "@/firebase/http/customers";
 import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 
 type CustomerPageProps = {
   customersData: ICustomers[];
@@ -14,7 +15,6 @@ type CustomerPageProps = {
 export function CustomerPage({ customersData, isLoading }: CustomerPageProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-
 
   const { mutateAsync } = useMutation((id: string) => deleteCustomer(id), {
     onSuccess: () => {
@@ -34,7 +34,7 @@ export function CustomerPage({ customersData, isLoading }: CustomerPageProps) {
   return (
     <section className="shadow-lg p-8">
       <div className="flex justify-between items-center mb-8">
-        <Heading>Clientes</Heading>
+        <h1 className="text-2xl">Clientes</h1>
         <Button onClick={() => router.push("/clientes/criar")}>
           Novo Cliente
         </Button>

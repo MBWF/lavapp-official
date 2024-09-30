@@ -1,25 +1,28 @@
 import OrderIsDelivery from "@/components/OrderIsDelivery";
+import { Button } from "@/components/ui/button";
+import { DeleteAlert } from "@/components/ui/components/alerts/delele";
 import { IOrders } from "@/types/Orders";
-import { Button } from "@/ui";
 import { Table } from "@/ui/Table";
 import { openModal } from "@/utils/handleModal";
 import { createColumnHelper } from "@tanstack/react-table";
 
-import { Edit2, Eye, Trash2 } from "lucide-react";
+import { Edit2, Eye } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 
 const columnHelper = createColumnHelper<IOrders>();
 
 type OrdersTableProps = {
   ordersData: IOrders[];
-  setCurrentItem: Dispatch<SetStateAction<IOrders>>;
+  setCurrentItem: Dispatch<SetStateAction<IOrders | null>>;
   handleDelete: (id: string) => Promise<void>;
+  handleCloseModal: () => void;
 };
 
 export function OrdersTable({
   ordersData,
   handleDelete,
   setCurrentItem,
+  handleCloseModal,
 }: OrdersTableProps) {
   const columns = [
     columnHelper.accessor("order_number", {
@@ -55,33 +58,27 @@ export function OrdersTable({
       cell: (info) => (
         <div className="flex gap-4">
           <div className="tooltip" data-tip="Editar">
-            <Button
-              variant="iconButton"
-              onClick={() => {
-                openModal("editItemModal");
-              }}
-            >
+            <Button variant="outline" disabled>
               <Edit2 className="text-blue-500" size={16} />
             </Button>
           </div>
           <div className="tooltip" data-tip="Visualizar">
             <Button
-              variant="iconButton"
+              variant="outline"
               onClick={() => {
                 setCurrentItem(info.row.original);
-                openModal("orderDetailsModal");
+                handleCloseModal();
               }}
             >
               <Eye className="text-gray-500" size={16} />
             </Button>
           </div>
           <div className="tooltip" data-tip="Excluir">
-            <Button
-              variant="iconButton"
-              onClick={() => handleDelete(String(info.getValue()))}
-            >
-              <Trash2 color="red" size={16} />
-            </Button>
+            <DeleteAlert
+              title="Excluir pedido"
+              description="Você deseja realmente excluir esse pedido? Essa ação é irreversível."
+              onConfirm={() => handleDelete(String(info.getValue()))}
+            />
           </div>
         </div>
       ),

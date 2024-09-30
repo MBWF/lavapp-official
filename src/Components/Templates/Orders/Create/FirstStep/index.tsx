@@ -1,34 +1,25 @@
-import {
-  DefaultSelectInput,
-  ErrorMessage,
-  Input,
-  InputMaskCustom,
-  Text,
-} from "@/ui";
-import {
-  Control,
-  Controller,
-  FieldErrors,
-  UseFormRegister,
-} from "react-hook-form";
-import { OrderSchemaType } from "../validations";
-import { useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ICustomers } from "@/types/Customers";
+import { DefaultSelectInput, InputMaskCustom } from "@/ui";
+import { Controller, useFormContext } from "react-hook-form";
+import { OrderSchemaType } from "../validations";
 
 export type FirstStepProps = {
-  control: Control<OrderSchemaType>;
-  register: UseFormRegister<OrderSchemaType>;
-  errors: FieldErrors<OrderSchemaType>;
   customerData: ICustomers[];
 };
 
-export function FirstStep({
-  control,
-  register,
-  errors,
-  customerData,
-}: FirstStepProps) {
-  const [isNewCustomer, setIsNewCustomer] = useState<boolean>(false);
+export function FirstStep({ customerData }: FirstStepProps) {
+  const {
+    control,
+    register,
+    formState: { errors },
+    watch,
+    setValue,
+  } = useFormContext<OrderSchemaType>();
+
+  const isNewCustomer = watch("isNewCustomer");
   return (
     <div className="text-lg">
       <Controller
@@ -51,26 +42,24 @@ export function FirstStep({
         )}
       />
 
-      <div className="form-control w-44 my-2">
-        <label className="label cursor-pointer">
-          <Text className="label-text text-lg">Cliente Avulso</Text>
-          <input
-            type="checkbox"
-            className="checkbox checkbox-primary"
-            checked={isNewCustomer}
-            {...register("isNewCustomer", {
-              onChange: () => {
-                setIsNewCustomer((state) => !state);
-              },
-            })}
-          />
-        </label>
+      <div className="flex gap-2 items-center my-4">
+        <Checkbox
+          id="isNewCustomer"
+          onCheckedChange={(value) => setValue("isNewCustomer", !!value)}
+        />
+        <Label
+          htmlFor="isNewCustomer"
+          className="text-md font-medium cursor-pointer"
+        >
+          Cliente avulso
+        </Label>
       </div>
       {isNewCustomer && (
         <div className="w-full flex flex-col gap-4">
           <Input
+            id="name"
             label="Nome Completo"
-            hasError={errors.name?.message}
+            errorMessage={errors.name?.message}
             placeholder="Insira o nome aqui"
             {...register("name")}
           />
@@ -85,11 +74,13 @@ export function FirstStep({
                   placeholder="Insira o número do what's app"
                   onChange={onChange}
                   value={value}
-                  mask="99 99999-9999"
+                  mask="(99) 99999-9999"
                   maskChar=""
                 />
                 {!!error?.message && (
-                  <ErrorMessage>{error?.message}</ErrorMessage>
+                  <span className="text-destructive text-sm">
+                    {error?.message}
+                  </span>
                 )}
               </>
             )}

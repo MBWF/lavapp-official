@@ -6,16 +6,13 @@ import Link from "next/link";
 export function Header() {
   const { logout } = useAuth();
   return (
-    <div className="navbar h-20 shadow-md">
+    <div className="h-20 shadow-md">
       <div className="flex justify-between w-full">
-        <Link href="/home">
-          <Image
-            width={200}
-            height={60}
-            alt="Logo Lavanderia"
-            src="/lav-logo.png"
-          />
-        </Link>
+        <div className="relative h-20 w-36">
+          <Link href="/home">
+            <Image fill alt="Logo Lavanderia" src="/lav-logo.png" />
+          </Link>
+        </div>
       </div>
       <div className="mx-10">
         <div className="w-32 ">
